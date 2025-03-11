@@ -1,0 +1,490 @@
+/* Additional styles specific to the allocation dashboard page */
+
+/* Dashboard Header */
+.dashboard-header {
+    padding: 8rem 5% 2rem;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.market-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding: 1.5rem 2rem;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-small);
+}
+
+.status-group {
+    display: flex;
+    gap: 2rem;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.status-label, .pe-label {
+    font-weight: 500;
+    color: var(--neutral-600);
+}
+
+.status-value {
+    font-weight: 700;
+    font-size: 1.2rem;
+    padding: 0.3rem 1rem;
+    border-radius: 2rem;
+}
+
+.status-value.bullish {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--bullish-color);
+}
+
+.status-value.neutral {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: var(--neutral-market-color);
+}
+
+.status-value.bearish {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--bearish-color);
+}
+
+.pe-value {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+}
+
+.last-updated {
+    font-size: 0.9rem;
+    color: var(--neutral-500);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.last-updated i {
+    color: var(--primary-color);
+}
+
+/* Allocation Calculator */
+.allocation-calculator {
+    padding: 4rem 5% 5rem;
+    background-color: white;
+}
+
+.section-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+}
+
+.calculator-header {
+    margin-bottom: 3.5rem;
+}
+
+.calculator-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.calculator-form {
+    background-color: var(--neutral-100);
+    border-radius: var(--border-radius);
+    padding: 2.5rem;
+    height: 100%;
+}
+
+.form-header {
+    margin-bottom: 2rem;
+}
+
+.amount-input {
+    margin-bottom: 2.5rem;
+}
+
+.amount-input label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--neutral-700);
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.currency {
+    position: absolute;
+    left: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 700;
+    color: var(--neutral-700);
+    font-size: 1.2rem;
+}
+
+#investment-amount {
+    width: 100%;
+    padding: 1rem 1rem 1rem 2.5rem;
+    border: 2px solid var(--neutral-300);
+    border-radius: var(--border-radius-small);
+    font-size: 1.2rem;
+    font-weight: 600;
+    transition: all var(--transition-fast);
+}
+
+#investment-amount:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.risk-profile {
+    margin-bottom: 2.5rem;
+}
+
+.risk-options {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.risk-option {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.25rem 1rem;
+    border: 2px solid var(--neutral-300);
+    border-radius: var(--border-radius-small);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.risk-option:hover {
+    border-color: var(--primary-light);
+}
+
+.risk-option input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.risk-label {
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+.risk-option input:checked + .risk-label {
+    color: var(--primary-color);
+}
+
+.risk-option input:checked ~ .risk-option {
+    border-color: var(--primary-color);
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+#calculate-btn {
+    width: 100%;
+    padding: 1rem;
+}
+
+/* Allocation Results */
+.allocation-results {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 2.5rem;
+    box-shadow: var(--box-shadow);
+    display: flex;
+    flex-direction: column;
+}
+
+.results-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.results-header h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.allocation-chart-container {
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+}
+
+.doughnut-chart-placeholder {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: conic-gradient(
+        var(--primary-color) 0% 40%, 
+        var(--warning-color) 40% 70%, 
+        var(--accent-color) 70% 100%
+    );
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.doughnut-chart-placeholder::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background-color: white;
+    transform: translate(-50%, -50%);
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.chart-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--neutral-500);
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 0.3;
+    }
+}
+
+.allocation-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.allocation-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius-small);
+    border-left: 6px solid;
+    box-shadow: var(--box-shadow-small);
+}
+
+.allocation-item.stocks {
+    border-color: var(--primary-color);
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.allocation-item.gold {
+    border-color: var(--warning-color);
+    background-color: rgba(245, 158, 11, 0.05);
+}
+
+.allocation-item.fd {
+    border-color: var(--accent-color);
+    background-color: rgba(20, 184, 166, 0.05);
+}
+
+.allocation-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.allocation-info i {
+    font-size: 1.2rem;
+}
+
+.allocation-name {
+    font-weight: 600;
+}
+
+.allocation-values {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+}
+
+.percentage {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.amount {
+    font-size: 0.9rem;
+    color: var(--neutral-600);
+}
+
+/* Investment Recommendations */
+.investment-recommendations {
+    padding: 5rem 5%;
+    background-color: var(--neutral-100);
+}
+
+.recommendation-tabs {
+    margin-top: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.tab-header {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    border-bottom: 2px solid var(--neutral-200);
+    margin-bottom: 3rem;
+    padding-bottom: 0.5rem;
+}
+
+.tab-btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    color: var(--neutral-600);
+    transition: all var(--transition-fast);
+}
+
+.tab-btn:hover {
+    color: var(--primary-color);
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.recommendation-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+/* AI Advisor Section */
+.ai-advisor-section {
+    padding: 5rem 5%;
+    background: linear-gradient(135deg, var(--neutral-800) 0%, var(--neutral-900) 100%);
+    color: white;
+}
+
+.section-header.light h2,
+.section-header.light p {
+    color: white;
+}
+
+.advisor-wrapper {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.full-chat {
+    height: 600px;
+    max-width: none;
+    margin: 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.full-chat .chat-messages {
+    height: 480px;
+}
+
+/* Responsive Styles for Allocation Page */
+@media (max-width: 1100px) {
+    .calculator-wrapper,
+    .advisor-wrapper {
+        grid-template-columns: 1fr;
+    }
+    
+    .recommendation-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .advisor-info {
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .market-status, 
+    .status-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .last-updated {
+        margin-top: 0.5rem;
+    }
+    
+    .recommendation-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .allocation-chart-container {
+        height: 200px;
+    }
+    
+    .doughnut-chart-placeholder {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .doughnut-chart-placeholder::after {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@media (max-width: 576px) {
+    .risk-options {
+        flex-direction: column;
+    }
+    
+    .tab-header {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+}
