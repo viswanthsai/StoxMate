@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Insights - Indivest</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="market-insights.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <span class="logo-text">Indi<span class="logo-accent">vest</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="allocation.html">Allocation Tool</a>
+            <a href="market-insights.html" class="active">Market Insights</a>
+            <a href="#">AI Advisor</a>
+            <a href="#">Profile</a>
+        </div>
+        <div class="auth-buttons">
+            <button class="btn btn-outline">Login</button>
+            <button class="btn btn-primary">Register</button>
+        </div>
+        <div class="hamburger">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="insights-header">
+        <div class="container">
+            <h1>Market Insights</h1>
+            <p>Stay ahead with real-time market analysis and investment trends</p>
+            
+            <div class="market-summary">
+                <div class="summary-item nifty">
+                    <div class="summary-title">NIFTY 50</div>
+                    <div class="summary-value">19,425.12</div>
+                    <div class="summary-change up"><i class="fas fa-caret-up"></i> 0.7%</div>
+                </div>
+                <div class="summary-item sensex">
+                    <div class="summary-title">SENSEX</div>
+                    <div class="summary-value">64,718.56</div>
+                    <div class="summary-change up"><i class="fas fa-caret-up"></i> 0.5%</div>
+                </div>
+                <div class="summary-item bank-nifty">
+                    <div class="summary-title">BANK NIFTY</div>
+                    <div class="summary-value">44,327.80</div>
+                    <div class="summary-change down"><i class="fas fa-caret-down"></i> 0.2%</div>
+                </div>
+                <div class="summary-item gold">
+                    <div class="summary-title">GOLD (10g)</div>
+                    <div class="summary-value">₹59,340</div>
+                    <div class="summary-change up"><i class="fas fa-caret-up"></i> 0.3%</div>
+                </div>
+                <div class="last-updated">
+                    <i class="fas fa-sync-alt"></i> Last updated: <span id="market-update-time">Just now</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Market Mood Analysis -->
+    <section class="market-mood-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Market Mood Analysis</h2>
+                <p>Current market status based on NIFTY 50 PE ratio</p>
+            </div>
+            
+            <div class="mood-analysis">
+                <div class="pe-gauge-container">
+                    <div class="pe-gauge">
+                        <div class="gauge-scale">
+                            <div class="scale-segment bearish">Bearish</div>
+                            <div class="scale-segment neutral">Neutral</div>
+                            <div class="scale-segment bullish">Bullish</div>
+                        </div>
+                        <div class="gauge-pointer" id="pe-pointer"></div>
+                        <div class="gauge-value" id="current-pe-value">19.2</div>
+                        <div class="gauge-label">NIFTY 50 PE Ratio</div>
+                    </div>
+                    <div class="gauge-explanation">
+                        <h3>What this means:</h3>
+                        <p>The current PE ratio of <strong id="pe-ratio-value">19.2</strong> indicates a <strong id="market-mood-text">neutral</strong> market. Based on historical data, the market is currently <strong>fairly valued</strong>.</p>
+                        
+                        <div class="recommendation-box">
+                            <h3>Recommended Allocation:</h3>
+                            <div class="allocation-bars">
+                                <div class="allocation-bar">
+                                    <div class="bar-label">Stocks</div>
+                                    <div class="bar-container">
+                                        <div class="bar-fill stocks" style="width: 40%;">40%</div>
+                                    </div>
+                                </div>
+                                <div class="allocation-bar">
+                                    <div class="bar-label">Gold</div>
+                                    <div class="bar-container">
+                                        <div class="bar-fill gold" style="width: 30%;">30%</div>
+                                    </div>
+                                </div>
+                                <div class="allocation-bar">
+                                    <div class="bar-label">Fixed Deposits</div>
+                                    <div class="bar-container">
+                                        <div class="bar-fill fd" style="width: 30%;">30%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Historical PE Ratio Trends -->
+    <section class="historical-trends">
+        <div class="container">
+            <div class="section-header">
+                <h2>Historical PE Ratio Trends</h2>
+                <p>Track how the market has performed over time</p>
+            </div>
+            
+            <div class="chart-controls">
+                <div class="time-filter">
+                    <button class="filter-btn active" data-period="1m">1M</button>
+                    <button class="filter-btn" data-period="6m">6M</button>
+                    <button class="filter-btn" data-period="1y">1Y</button>
+                    <button class="filter-btn" data-period="5y">5Y</button>
+                    <button class="filter-btn" data-period="max">MAX</button>
+                </div>
+                <div class="chart-type-toggle">
+                    <button class="chart-type-btn active" data-chart="line"><i class="fas fa-chart-line"></i> Line</button>
+                    <button class="chart-type-btn" data-chart="candlestick"><i class="fas fa-chart-bar"></i> Candlestick</button>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="pe-history-chart"></canvas>
+            </div>
+            
+            <div class="chart-insights">
+                <div class="insight-card">
+                    <div class="insight-icon">
+                        <i class="fas fa-arrow-trend-up"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h3>PE Ratio Trend</h3>
+                        <p>The NIFTY 50 PE ratio has been relatively stable over the past month, moving in the neutral range between 18.5 and 20.1.</p>
+                    </div>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-icon">
+                        <i class="fas fa-clock-rotate-left"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h3>Historical Context</h3>
+                        <p>Historically, a PE ratio above 22 has often been followed by market corrections, while ratios below 17 have presented buying opportunities.</p>
+                    </div>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h3>Market Outlook</h3>
+                        <p>The current neutral valuation suggests a balanced investment approach with moderate exposure to equities.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sector Performance -->
+    <section class="sector-performance">
+        <div class="container">
+            <div class="section-header">
+                <h2>Sector Performance</h2>
+                <p>See which sectors are outperforming the market</p>
+            </div>
+            
+            <div class="time-filter sector-filter">
+                <button class="filter-btn active" data-period="1d">1D</button>
+                <button class="filter-btn" data-period="1w">1W</button>
+                <button class="filter-btn" data-period="1m">1M</button>
+                <button class="filter-btn" data-period="3m">3M</button>
+                <button class="filter-btn" data-period="1y">1Y</button>
+            </div>
+            
+            <div class="sectors-container">
+                <div class="sector-card up">
+                    <div class="sector-header">
+                        <div class="sector-name">IT</div>
+                        <div class="sector-change">+2.5%</div>
+                    </div>
+                    <div class="sector-chart">
+                        <div class="mini-chart" id="it-chart"></div>
+                    </div>
+                    <div class="top-stocks">
+                        <div class="top-stock">
+                            <span class="stock-name">TCS</span>
+                            <span class="stock-change up">+3.2%</span>
+                        </div>
+                        <div class="top-stock">
+                            <span class="stock-name">Infosys</span>
+                            <span class="stock-change up">+2.8%</span>
+                        </div>
+                        <div class="top-stock">
+                            <span class="stock-name">HCL</span>
+                            <span class="stock-change up">+1.9%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sector-card up">
+                    <div class="sector-header">
+                        <div class="sector-name">Pharma</div>
+                        <div class="sector-change">+1.8%</div>
+                    </div>
+                    <div class="sector-chart">
+                        <div class="mini-chart" id="pharma-chart"></div>
+                    </div>
+                    <div class="top-stocks">
+                        <div class="top-stock">
+                            <span class="stock-name">Sun Pharma</span>
+                            <span class="stock-change up">+2.1%</span>
+                        </div>
+                        <div class="top-stock">
+                            <span class="stock-name">Dr Reddy's</span>
+                            <span class="stock-change up">+1.5%</span>
+                        </div>
+                        <div class="top-stock">
+                            <span class="stock-name">Cipla</span>
+                            <span class="stock-change up">+1.7%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sector-card down">
+                    <div class="sector-header">
+                        <div class="sector-name">Banking</div>
+                        <div class="sector-change">-0.6%</div>
+                    </div>
+                    <div class="sector-chart">
+                        <div class="mini-chart" id="banking-chart"></div>
+                    </div>
+                    <div class="top-stocks">
+                        <div class="top-stock">
+                            <span class="stock-name">HDFC Bank</span>
+                            <span class="stock-change down">-0.8%</span>
+                        </div>
+                        <div class="top-stock">
+                            <span class="stock-name">ICICI Bank</span>
+                            <span class="stock-change down">-0.5%</span>
+                        </div>
+                        <div class="top-stock">
+                            <span class="stock-name">SBI</span>
+                            <span class="stock-change down">-0.3%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sector-card up">
+                    <div class="sector-header">
+                        <div class="sector-name">FMCG</div>
+                        <div class="sector-change">+0.9%</div>
+                    </div>
+                    <div class="sector-chart">
+                        <div class="mini-chart" id="fmcg-chart"></div>
+                    </div>
+                    <div class="top-stocks">
+                        <div class="top-stock">
+                            <span class="stock-name">HUL</span>
+                            <span class="stock-change up">+1.2%</span>
+                        </div>
+                        <div class="top-stock">
+                            <span class="stock-name">ITC</span>
+                            <span class="stock-change up">+0.7%</span>
+                        </div>
+                        <div class="top-stock">
+                            <span class="stock-name">Nestle</span>
+                            <span class="stock-change up">+0.8%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Investment Insights -->
+    <section class="investment-insights">
+        <div class="container">
+            <div class="section-header">
+                <h2>Investment Insights</h2>
+                <p>Expert analysis to guide your investment decisions</p>
+            </div>
+            
+            <div class="insights-wrapper">
+                <div class="insights-main">
+                    <article class="insight-article">
+                        <h3>Understanding Market Cycles</h3>
+                        <div class="article-meta">
+                            <span class="date">June 15, 2023</span>
+                            <span class="tag">Market Analysis</span>
+                        </div>
+                        <p>Market cycles are regular patterns of ups and downs in financial markets that occur over time. These cycles consist of four phases: accumulation, uptrend (markup), distribution, and downtrend (markdown).</p>
+                        <p>Currently, based on the PE ratio and other technical indicators, the Indian market appears to be in the late accumulation to early markup phase, presenting opportunities for strategic investment.</p>
+                        <a href="#" class="read-more">Read more</a>
+                    </article>
+                    
+                    <article class="insight-article">
+                        <h3>Sectoral Rotation Strategy</h3>
+                        <div class="article-meta">
+                            <span class="date">June 10, 2023</span>
+                            <span class="tag">Strategy</span>
+                        </div>
+                        <p>Sectoral rotation is an investment strategy that involves shifting investments across different sectors based on economic cycles. As the economy moves through different phases, certain sectors tend to outperform others.</p>
+                        <p>With the current neutral market mood, defensive sectors like FMCG and Healthcare along with selective IT stocks present attractive opportunities for balanced portfolio growth.</p>
+                        <a href="#" class="read-more">Read more</a>
+                    </article>
+                </div>
+                
+                <div class="insights-sidebar">
+                    <div class="key-events">
+                        <h3>Upcoming Key Events</h3>
+                        <ul class="events-list">
+                            <li class="event">
+                                <div class="event-date">Jun 25</div>
+                                <div class="event-details">
+                                    <div class="event-title">RBI Monetary Policy</div>
+                                    <div class="event-impact high">High Impact</div>
+                                </div>
+                            </li>
+                            <li class="event">
+                                <div class="event-date">Jul 02</div>
+                                <div class="event-details">
+                                    <div class="event-title">Q1 Results Season Begins</div>
+                                    <div class="event-impact medium">Medium Impact</div>
+                                </div>
+                            </li>
+                            <li class="event">
+                                <div class="event-date">Jul 15</div>
+                                <div class="event-details">
+                                    <div class="event-title">Inflation Data Release</div>
+                                    <div class="event-impact high">High Impact</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="expert-picks">
+                        <h3>Expert Picks</h3>
+                        <div class="expert-pick">
+                            <div class="pick-header">
+                                <div class="pick-title">Index Funds</div>
+                                <div class="pick-rating">★★★★★</div>
+                            </div>
+                            <p>Low-cost index funds tracking NIFTY 50 remain top picks for core portfolio allocation in current market conditions.</p>
+                        </div>
+                        <div class="expert-pick">
+                            <div class="pick-header">
+                                <div class="pick-title">Gold ETFs</div>
+                                <div class="pick-rating">★★★★☆</div>
+                            </div>
+                            <p>Gold ETFs provide a hedge against market volatility and inflation concerns in the current economic climate.</p>
+                        </div>
+                        <div class="expert-pick">
+                            <div class="pick-header">
+                                <div class="pick-title">Corporate FDs</div>
+                                <div class="pick-rating">★★★★☆</div>
+                            </div>
+                            <p>High-rated corporate FDs offering 7-8% returns present attractive opportunities for the debt portion of portfolios.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta">
+        <div class="cta-content">
+            <h2>Ready to apply these insights?</h2>
+            <p>Use our AI-powered allocation tool to optimize your investments</p>
+            <a href="allocation.html" class="btn btn-primary btn-large">Try Allocation Tool</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-text">Indi<span class="logo-accent">vest</span></span>
+                <p>AI-powered investment solutions</p>
+            </div>
+            
+            <div class="footer-links">
+                <div class="link-group">
+                    <h4>Product</h4>
+                    <a href="#">Features</a>
+                    <a href="#">Pricing</a>
+                    <a href="#">Testimonials</a>
+                </div>
+                
+                <div class="link-group">
+                    <h4>Resources</h4>
+                    <a href="#">Blog</a>
+                    <a href="market-insights.html">Market Insights</a>
+                    <a href="#">Learning Center</a>
+                </div>
+                
+                <div class="link-group">
+                    <h4>Company</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Careers</a>
+                    <a href="#">Contact</a>
+                </div>
+                
+                <div class="link-group">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Disclaimers</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 Indivest. All rights reserved.</p>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="market-insights.js"></script>
+</body>
+</html>
