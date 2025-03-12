@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Indivest</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="loader.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loader">
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+        </div>
+        <div class="loading-logo">Indi<span class="logo-accent">vest</span></div>
+        <div class="loading-message">Loading your profile...</div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <span class="logo-text">Indi<span class="logo-accent">vest</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="allocation.html">Allocation Tool</a>
+            <a href="market-insights.html">Market Insights</a>
+            <a href="#">AI Advisor</a>
+            <a href="profile.html" class="active">Profile</a>
+        </div>
+        <div class="auth-buttons">
+            <button class="btn btn-outline">Logout</button>
+        </div>
+        <div class="hamburger">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </nav>
+
+    <!-- Profile Header -->
+    <section class="profile-header">
+        <div class="container">
+            <div class="profile-header-content">
+                <div class="profile-avatar">
+                    <img src="https://ui-avatars.com/api/?name=Raj+Sharma&background=3b82f6&color=fff&size=128" alt="Profile Picture">
+                    <button class="edit-avatar">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                </div>
+                <div class="profile-info">
+                    <h1>Raj Sharma</h1>
+                    <div class="profile-badges">
+                        <span class="badge premium">Premium</span>
+                        <span class="badge experience">Experienced Investor</span>
+                    </div>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat">
+                        <span class="stat-label">Portfolio Value</span>
+                        <span class="stat-value">₹8,45,000</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Returns (YTD)</span>
+                        <span class="stat-value positive">+12.4%</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Risk Profile</span>
+                        <span class="stat-value">Moderate</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Profile Content -->
+    <section class="profile-content">
+        <div class="container">
+            <div class="profile-tabs">
+                <button class="tab-button active" data-tab="personal">Personal Details</button>
+                <button class="tab-button" data-tab="investment">Investment Preferences</button>
+                <button class="tab-button" data-tab="security">Security</button>
+                <button class="tab-button" data-tab="notifications">Notifications</button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="tab-content active" id="personal-tab">
+                <div class="profile-section">
+                    <h2>Personal Information</h2>
+                    <form class="profile-form">
+                        <div class="form-group">
+                            <label for="fullname">Full Name</label>
+                            <input type="text" id="fullname" value="Raj Sharma" class="form-control">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" value="raj.sharma@gmail.com" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" value="+91 98765 43210" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="dob">Date of Birth</label>
+                                <input type="date" id="dob" value="1985-06-15" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="pan">PAN Number</label>
+                                <input type="text" id="pan" value="ABCDE1234F" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <textarea id="address" class="form-control">123 Green Avenue, Bandra West, Mumbai, Maharashtra 400050</textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="tab-content" id="investment-tab">
+                <div class="profile-section">
+                    <h2>Investment Preferences</h2>
+                    <form class="profile-form">
+                        <div class="form-group">
+                            <label>Risk Tolerance</label>
+                            <div class="risk-slider-container">
+                                <input type="range" min="1" max="5" value="3" class="risk-slider" id="risk-tolerance">
+                                <div class="risk-labels">
+                                    <span>Conservative</span>
+                                    <span>Moderate</span>
+                                    <span>Aggressive</span>
+                                </div>
+                                <div class="risk-value">Moderate</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Investment Goals</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" checked> Retirement Planning
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" checked> Wealth Creation
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox"> Tax Saving
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" checked> Children's Education
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox"> Home Purchase
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="monthly-investment">Monthly Investment Capacity</label>
+                                <div class="input-with-prefix">
+                                    <span class="input-prefix">₹</span>
+                                    <input type="text" id="monthly-investment" value="50,000" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="investment-horizon">Investment Horizon</label>
+                                <select id="investment-horizon" class="form-control">
+                                    <option>Less than 1 year</option>
+                                    <option>1-3 years</option>
+                                    <option selected>3-5 years</option>
+                                    <option>5-10 years</option>
+                                    <option>More than 10 years</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Preferred Investment Assets</label>
+                            <div class="preferred-assets">
+                                <label class="asset-option">
+                                    <input type="checkbox" checked>
+                                    <div class="asset-icon"><i class="fas fa-chart-line"></i></div>
+                                    <span>Stocks</span>
+                                </label>
+                                <label class="asset-option">
+                                    <input type="checkbox" checked>
+                                    <div class="asset-icon"><i class="fas fa-coins"></i></div>
+                                    <span>Gold</span>
+                                </label>
+                                <label class="asset-option">
+                                    <input type="checkbox" checked>
+                                    <div class="asset-icon"><i class="fas fa-landmark"></i></div>
+                                    <span>Fixed Deposits</span>
+                                </label>
+                                <label class="asset-option">
+                                    <input type="checkbox">
+                                    <div class="asset-icon"><i class="fas fa-building"></i></div>
+                                    <span>Real Estate</span>
+                                </label>
+                                <label class="asset-option">
+                                    <input type="checkbox" checked>
+                                    <div class="asset-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                                    <span>Bonds</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Save Preferences</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="tab-content" id="security-tab">
+                <div class="profile-section">
+                    <h2>Security Settings</h2>
+                    <form class="profile-form">
+                        <div class="form-group">
+                            <h3>Change Password</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="current-password">Current Password</label>
+                                    <input type="password" id="current-password" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="new-password">New Password</label>
+                                    <input type="password" id="new-password" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirm-password">Confirm New Password</label>
+                                    <input type="password" id="confirm-password" class="form-control">
+                                </div>
+                            </div>
+                            <div class="password-requirements">
+                                <p>Password must contain:</p>
+                                <ul>
+                                    <li class="requirement met">At least 8 characters</li>
+                                    <li class="requirement met">At least one uppercase letter</li>
+                                    <li class="requirement">At least one number</li>
+                                    <li class="requirement">At least one special character</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <h3>Two-Factor Authentication</h3>
+                            <div class="toggle-container">
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                                <div class="toggle-label">
+                                    <span>Enabled</span>
+                                    <p>Two-factor authentication adds an additional layer of security to your account</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <h3>Login History</h3>
+                            <div class="login-history">
+                                <div class="login-item">
+                                    <div class="login-info">
+                                        <i class="fas fa-laptop"></i>
+                                        <div class="login-details">
+                                            <span class="device">Windows PC - Chrome</span>
+                                            <span class="location">Mumbai, India</span>
+                                        </div>
+                                    </div>
+                                    <div class="login-time">
+                                        <span>Current Session</span>
+                                    </div>
+                                </div>
+                                <div class="login-item">
+                                    <div class="login-info">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <div class="login-details">
+                                            <span class="device">iPhone - Safari</span>
+                                            <span class="location">Mumbai, India</span>
+                                        </div>
+                                    </div>
+                                    <div class="login-time">
+                                        <span>Yesterday, 15:42</span>
+                                    </div>
+                                </div>
+                                <div class="login-item">
+                                    <div class="login-info">
+                                        <i class="fas fa-tablet-alt"></i>
+                                        <div class="login-details">
+                                            <span class="device">iPad - Safari</span>
+                                            <span class="location">New Delhi, India</span>
+                                        </div>
+                                    </div>
+                                    <div class="login-time">
+                                        <span>March 10, 09:17</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline btn-sm view-all-btn">View All Login Activity</button>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Save Security Settings</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="tab-content" id="notifications-tab">
+                <div class="profile-section">
+                    <h2>Notification Preferences</h2>
+                    <form class="profile-form">
+                        <div class="form-group">
+                            <h3>Communication Channels</h3>
+                            <div class="notification-channels">
+                                <div class="channel-option">
+                                    <div class="channel-info">
+                                        <i class="fas fa-envelope"></i>
+                                        <span>Email</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="channel-option">
+                                    <div class="channel-info">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <span>SMS</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="channel-option">
+                                    <div class="channel-info">
+                                        <i class="fas fa-bell"></i>
+                                        <span>Push Notifications</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="channel-option">
+                                    <div class="channel-info">
+                                        <i class="fab fa-whatsapp"></i>
+                                        <span>WhatsApp</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <h3>Notification Types</h3>
+                            <div class="notification-types">
+                                <div class="notification-type">
+                                    <div class="type-info">
+                                        <h4>Portfolio Updates</h4>
+                                        <p>Daily and weekly summaries of your portfolio performance</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="notification-type">
+                                    <div class="type-info">
+                                        <h4>Market Alerts</h4>
+                                        <p>Important updates about market conditions and PE ratio changes</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="notification-type">
+                                    <div class="type-info">
+                                        <h4>Investment Recommendations</h4>
+                                        <p>Personalized investment opportunities based on your preferences</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="notification-type">
+                                    <div class="type-info">
+                                        <h4>Educational Content</h4>
+                                        <p>Articles, videos, and resources to improve your investment knowledge</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="notification-type">
+                                    <div class="type-info">
+                                        <h4>Account Activity</h4>
+                                        <p>Login alerts and security notifications</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <h3>Communication Frequency</h3>
+                            <div class="frequency-options">
+                                <label class="radio-option">
+                                    <input type="radio" name="frequency">
+                                    <span>Real-time updates only</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="frequency" checked>
+                                    <span>Daily digest (One email per day)</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="frequency">
+                                    <span>Weekly summary</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Save Notification Settings</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Summary Section -->
+    <section class="portfolio-summary">
+        <div class="container">
+            <h2>Portfolio Summary</h2>
+            <div class="portfolio-cards">
+                <div class="portfolio-card">
+                    <div class="card-header">
+                        <h3>Asset Allocation</h3>
+                        <div class="card-actions">
+                            <button class="btn-icon"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                    </div>
+                    <div class="allocation-chart">
+                        <div class="chart-placeholder" id="allocation-chart"></div>
+                        <div class="allocation-legend">
+                            <div class="legend-item">
+                                <span class="legend-color" style="background-color: var(--primary-color);"></span>
+                                <span class="legend-text">Stocks (45%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background-color: var(--warning-color);"></span>
+                                <span class="legend-text">Gold (30%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background-color: var(--accent-color);"></span>
+                                <span class="legend-text">FDs (15%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background-color: var(--neutral-500);"></span>
+                                <span class="legend-text">Others (10%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portfolio-card">
+                    <div class="card-header">
+                        <h3>Performance</h3>
+                        <div class="time-filter">
+                            <button class="filter-btn" data-period="1m">1M</button>
+                            <button class="filter-btn active" data-period="6m">6M</button>
+                            <button class="filter-btn" data-period="1y">1Y</button>
+                            <button class="filter-btn" data-period="all">ALL</button>
+                        </div>
+                    </div>
+                    <div class="performance-stats">
+                        <div class="stat-card up">
+                            <span class="stat-label">Total Return</span>
+                            <span class="stat-value">+12.4%</span>
+                            <span class="stat-amount">+₹93,450</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">NIFTY 50</span>
+                            <span class="stat-value">+8.7%</span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="performance-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="investment-table">
+                <h3>Investment Holdings</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Invested Value</th>
+                                <th>Current Value</th>
+                                <th>Return</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="investment-name">
+                                        <div class="investment-icon stocks">
+                                            <i class="fas fa-chart-line"></i>
+                                        </div>
+                                        <div>
+                                            <span class="name">NIFTY 50 Index Fund</span>
+                                            <span class="details">UTI Mutual Fund</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Equity</td>
+                                <td>₹3,00,000</td>
+                                <td>₹3,54,000</td>
+                                <td class="return-cell positive">+18.0%</td>
+                                <td><button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="investment-name">
+                                        <div class="investment-icon gold">
+                                            <i class="fas fa-coins"></i>
+                                        </div>
+                                        <div>
+                                            <span class="name">Gold ETF</span>
+                                            <span class="details">SBI Gold ETF</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Commodity</td>
+                                <td>₹2,50,000</td>
+                                <td>₹2,75,000</td>
+                                <td class="return-cell positive">+10.0%</td>
+                                <td><button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="investment-name">
+                                        <div class="investment-icon fd">
+                                            <i class="fas fa-landmark"></i>
+                                        </div>
+                                        <div>
+                                            <span class="name">Fixed Deposit</span>
+                                            <span class="details">HDFC Bank</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Debt</td>
+                                <td>₹1,50,000</td>
+                                <td>₹1,59,000</td>
+                                <td class="return-cell positive">+6.0%</td>
+                                <td><button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="investment-name">
+                                        <div class="investment-icon other">
+                                            <i class="fas fa-file-invoice-dollar"></i>
+                                        </div>
+                                        <div>
+                                            <span class="name">Corporate Bond</span>
+                                            <span class="details">ICICI Corporate Bond</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Debt</td>
+                                <td>₹1,00,000</td>
+                                <td>₹1,07,000</td>
+                                <td class="return-cell positive">+7.0%</td>
+                                <td><button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-outline view-all-btn">View All Investments</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-text">Indi<span class="logo-accent">vest</span></span>
+                <p>AI-powered investment solutions</p>
+            </div>
+            
+            <div class="footer-links">
+                <div class="link-group">
+                    <h4>Product</h4>
+                    <a href="#">Features</a>
+                    <a href="#">Pricing</a>
+                    <a href="#">Testimonials</a>
+                </div>
+                
+                <div class="link-group">
+                    <h4>Resources</h4>
+                    <a href="#">Blog</a>
+                    <a href="market-insights.html">Market Insights</a>
+                    <a href="#">Learning Center</a>
+                </div>
+                
+                <div class="link-group">
+                    <h4>Company</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Careers</a>
+                    <a href="#">Contact</a>
+                </div>
+                
+                <div class="link-group">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Disclaimers</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 Indivest. All rights reserved.</p>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="chart-utils.js"></script>
+    <script src="profile.js"></script>
+</body>
+</html>
