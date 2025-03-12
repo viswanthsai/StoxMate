@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Design Test - Indivest</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .iframe-container {
+            margin-bottom: 2rem;
+            border: 1px solid var(--neutral-300);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        
+        iframe {
+            border: none;
+            width: 100%;
+            height: 500px;
+        }
+        
+        .controls {
+            padding: 1rem;
+            background-color: var(--neutral-100);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid var(--neutral-300);
+        }
+        
+        .device-select {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        select {
+            padding: 0.5rem;
+            border: 1px solid var(--neutral-300);
+            border-radius: var(--border-radius-small);
+            background-color: white;
+        }
+        
+        .page-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+        
+        .page-tab {
+            padding: 0.5rem 1rem;
+            background-color: var(--neutral-200);
+            border: 1px solid var(--neutral-300);
+            border-radius: var(--border-radius-small);
+            cursor: pointer;
+        }
+        
+        .page-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <span class="logo-text">Indi<span class="logo-accent">vest</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="allocation.html">Allocation Tool</a>
+            <a href="market-insights.html">Market Insights</a>
+            <a href="#" class="active">Responsive Test</a>
+        </div>
+    </nav>
+    
+    <div style="padding: 8rem 5% 4rem;">
+        <h1>Responsive Design Test</h1>
+        <p>Use this tool to test how the application looks on different devices.</p>
+        
+        <div class="page-tabs">
+            <button class="page-tab active" data-page="index.html">Home</button>
+            <button class="page-tab" data-page="allocation.html">Allocation Tool</button>
+            <button class="page-tab" data-page="market-insights.html">Market Insights</button>
+        </div>
+        
+        <div class="iframe-container">
+            <div class="controls">
+                <label>Device:</label>
+                <div class="device-select">
+                    <select id="device-selector">
+                        <option value="100%">Desktop (Responsive)</option>
+                        <option value="1440px">Desktop (1440px)</option>
+                        <option value="1024px">Laptop (1024px)</option>
+                        <option value="768px">Tablet (768px)</option>
+                        <option value="425px">Mobile Large (425px)</option>
+                        <option value="375px">Mobile Medium (375px)</option>
+                        <option value="320px">Mobile Small (320px)</option>
+                    </select>
+                </div>
+                <label>Orientation:</label>
+                <select id="orientation-selector">
+                    <option value="portrait">Portrait</option>
+                    <option value="landscape">Landscape</option>
+                </select>
+            </div>
+            <iframe id="preview-frame" src="index.html"></iframe>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deviceSelector = document.getElementById('device-selector');
+            const orientationSelector = document.getElementById('orientation-selector');
+            const previewFrame = document.getElementById('preview-frame');
+            const pageTabs = document.querySelectorAll('.page-tab');
+            
+            // Change device size
+            deviceSelector.addEventListener('change', updatePreview);
+            orientationSelector.addEventListener('change', updatePreview);
+            
+            // Switch between pages
+            pageTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    pageTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    previewFrame.src = this.getAttribute('data-page');
+                });
+            });
+            
+            function updatePreview() {
+                const width = deviceSelector.value;
+                const orientation = orientationSelector.value;
+                
+                if (width === '100%') {
+                    previewFrame.style.width = '100%';
+                    previewFrame.style.height = '500px';
+                    return;
+                }
+                
+                // Get numeric width
+                const numericWidth = parseInt(width);
+                
+                if (orientation === 'portrait') {
+                    previewFrame.style.width = width;
+                    previewFrame.style.height = (numericWidth * 1.5) + 'px';
+                } else {
+                    previewFrame.style.width = width;
+                    previewFrame.style.height = (numericWidth * 0.6) + 'px';
+                }
+            }
+            
+            // Initialize preview
+            updatePreview();
+        });
+    </script>
+</body>
+</html>

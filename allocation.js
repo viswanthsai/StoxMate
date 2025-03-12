@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Market data
-    let currentPE = 19.2;
+    let currentPE = 20.0;
     let marketMood = 'neutral';
     let investmentAmount = 50000; // Default amount
     let riskProfile = 'conservative'; // Default risk profile

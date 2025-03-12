@@ -476,6 +476,52 @@
         width: 100px;
         height: 100px;
     }
+    
+    .dashboard-header {
+        padding: 7rem 5% 2rem;
+    }
+    
+    .section-header h2 {
+        font-size: 1.8rem;
+    }
+    
+    .section-header p {
+        font-size: 1rem;
+    }
+    
+    .calculator-form, .allocation-results {
+        padding: 1.5rem;
+    }
+    
+    .risk-option {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .advisor-features .feature {
+        margin-bottom: 1.5rem;
+    }
+    
+    .question-chips {
+        flex-wrap: wrap;
+    }
+    
+    .question-chip {
+        margin-bottom: 0.5rem;
+    }
+    
+    .education-cards {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .education-card {
+        margin-bottom: 0;
+    }
+    
+    .allocation-table {
+        font-size: 0.85rem;
+    }
 }
 
 @media (max-width: 576px) {
@@ -486,5 +532,36 @@
     .tab-header {
         flex-wrap: wrap;
         justify-content: flex-start;
+    }
+    
+    .container {
+        padding: 0 0.5rem;
+    }
+    
+    .full-chat {
+        height: 500px;
+    }
+    
+    .full-chat .chat-messages {
+        height: 380px;
+    }
+    
+    .popular-questions h3 {
+        margin-bottom: 0.75rem;
+    }
+}
+
+/* Add these styles to improve mobile responsiveness in allocation.css */
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
     }
 }

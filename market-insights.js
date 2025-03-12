@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize market data
-    let currentPE = 19.2;
+    let currentPE = 20.0;
     let marketMood = 'neutral';
     
     // PE ratio ranges for market mood
@@ -391,16 +391,16 @@ document.addEventListener('DOMContentLoaded', function() {
      */
     function simulateMarketUpdates() {
         // Update PE ratio with small random changes
-        const peChange = (Math.random() - 0.5) * 0.3;
-        currentPE = Math.max(peRanges.bearish.min, Math.min(peRanges.bullish.max, currentPE + peChange));
+        const peChange = (Math.random() - 0.5) * 0.2;
+        currentPE = Math.max(17, Math.min(23, currentPE + peChange));
         
         // Update gauge and related displays
         updateGaugePointer(currentPE);
         
         // Update NIFTY value with corresponding change
-        const niftyChange = (currentPE > 19.2) ? '+0.7%' : ((currentPE < 19) ? '-0.4%' : '+0.2%');
+        const niftyChange = (currentPE > 20) ? '+0.4%' : ((currentPE < 19) ? '-0.3%' : '+0.2%');
         document.querySelector('.summary-item.nifty .summary-change').innerHTML = 
-            `<i class="fas fa-caret-${currentPE > 19.2 ? 'up' : 'down'}"></i> ${niftyChange}`;
+            `<i class="fas fa-caret-${currentPE > 19.8 ? 'up' : 'down'}"></i> ${niftyChange}`;
         
         // Update timestamp
         document.getElementById('market-update-time').textContent = new Date().toLocaleTimeString();

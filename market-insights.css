@@ -136,6 +136,7 @@
     border-radius: 4px;
     z-index: 2;
     transition: left 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: gauge-appear 1s ease-out;
 }
 
 .gauge-pointer::after {
@@ -674,6 +675,25 @@
     .insights-sidebar {
         order: -1;
     }
+
+    .insight-article {
+        padding: 1.5rem;
+    }
+    
+    .article-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+    
+    .expert-pick {
+        padding-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .insights-sidebar {
+        margin-bottom: 2rem;
+    }
 }
 
 @media (max-width: 576px) {
@@ -697,5 +717,80 @@
     
     .gauge-scale {
         font-size: 0.75rem;
+    }
+
+    .chart-container {
+        padding: 1rem;
+    }
+    
+    .pe-gauge {
+        width: 300px;
+        height: 180px;
+    }
+
+    .gauge-value {
+        font-size: 2rem;
+    }
+    
+    .gauge-label {
+        top: 90px;
+    }
+    
+    .insight-card {
+        padding: 1.25rem;
+    }
+    
+    .allocation-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+    }
+    
+    .bar-label {
+        margin-bottom: 0.5rem;
+        width: 100%;
+    }
+    
+    .bar-container {
+        width: 100%;
+    }
+    
+    .bar-fill {
+        padding: 0 0.5rem;
+        justify-content: flex-start;
+    }
+}
+
+/* Add these extra styles to market-insights.css for better mobile experience */
+
+/* Container size adjustments */
+.container {
+    padding: 0 1rem;
+}
+
+/* Fix for sector filter scroll */
+.time-filter::-webkit-scrollbar {
+    height: 4px;
+}
+
+.time-filter::-webkit-scrollbar-track {
+    background: var(--neutral-200);
+    border-radius: 2px;
+}
+
+.time-filter::-webkit-scrollbar-thumb {
+    background: var(--neutral-400);
+    border-radius: 2px;
+}
+
+/* Animation for gauge pointer */
+@keyframes gauge-appear {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
     }
 }

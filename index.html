@@ -5,10 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Indivest - AI-Powered Investment Solutions</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="loader.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loader">
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+            <div class="loader-circle"></div>
+        </div>
+        <div class="loading-logo">Indi<span class="logo-accent">vest</span></div>
+        <div class="loading-message">Loading your investment dashboard...</div>
+    </div>
+
     <!-- Navigation Bar -->
     <nav>
         <div class="logo">
@@ -26,8 +38,8 @@
             <button class="btn btn-primary">Register</button>
         </div>
         <div class="hamburger">
-            <div class="bar"></div>
-            <div class="bar"></div>
+            <div class="bar"></div>t Started</a>
+            <div class="bar"></div>ge">Market Insights</a>
             <div class="bar"></div>
         </div>
     </nav>
@@ -38,8 +50,8 @@
             <h1 class="animate-in">Smart Investments <span class="highlight">Powered by AI</span></h1>
             <p class="animate-in delay-1">Let our AI analyze market conditions and create the perfect investment portfolio for you</p>
             <div class="hero-buttons animate-in delay-2">
-                <button class="btn btn-primary btn-large">Get Started</button>
-                <button class="btn btn-outline btn-large">Learn More</button>
+                <a href="allocation.html" class="btn btn-primary btn-large">Get Started</a>
+                <a href="market-insights.html" class="btn btn-outline btn-large">Market Insights</a>
             </div>
         </div>
         <div class="hero-image animate-in delay-3">
@@ -48,7 +60,7 @@
                     <h3>Market Mood</h3>
                     <div class="mood-indicator">
                         <span class="mood neutral">Neutral</span>
-                        <span class="pe-ratio">NIFTY 50 PE: 19.2</span>
+                        <span class="pe-ratio">NIFTY 50 PE: <span id="pe-ratio">19.2</span></span>
                     </div>
                 </div>
                 <div class="allocation-preview">
@@ -199,7 +211,7 @@
                     <div class="typing-indicator">
                         <span></span>
                         <span></span>
-                        <span></span>
+                        <span></span>visor Now</a>
                     </div>
                 </div>
             </div>
@@ -211,7 +223,7 @@
         </div>
         
         <div class="chatbot-cta">
-            <button class="btn btn-primary btn-large">Try AI Advisor Now</button>
+            <a href="allocation.html" class="btn btn-primary btn-large">Try AI Advisor Now</a>
         </div>
     </section>
 
@@ -225,33 +237,33 @@
         <div class="market-data">
             <div class="market-card">
                 <h3>NIFTY 50</h3>
-                <div class="market-value up">19,425.12 <span>+0.7%</span></div>
-                <div class="market-detail">PE Ratio: <span id="pe-ratio">19.2</span></div>
+                <div class="market-value up">22,473 <span>+0.4%</span></div>
+                <div class="market-detail">PE Ratio: <span id="pe-ratio">20.0</span></div>
                 <div class="market-mood-indicator">
                     <div class="mood-bar">
                         <div class="mood-segment bearish">Bearish</div>
                         <div class="mood-segment neutral active">Neutral</div>
                         <div class="mood-segment bullish">Bullish</div>
                     </div>
-                    <div class="mood-marker" style="left: 45%"></div>
+                    <div class="mood-marker" style="left: 55%"></div>
                 </div>
             </div>
             
             <div class="market-card">
                 <h3>Gold</h3>
-                <div class="market-value up">₹59,340 <span>+0.3%</span></div>
+                <div class="market-value up">₹81,234 <span>+0.6%</span></div>
                 <div class="market-detail">24K per 10g</div>
                 <div class="trend-chart" id="gold-chart"></div>
             </div>
             
             <div class="market-card">
                 <h3>FD Rates</h3>
-                <div class="market-value">Up to 7.25%</div>
+                <div class="market-value">Up to 7.5%</div>
                 <div class="market-detail">Top bank rates</div>
                 <div class="fd-banks">
-                    <div class="bank">SBI: 6.8%</div>
-                    <div class="bank">HDFC: 7.0%</div>
-                    <div class="bank">ICICI: 7.25%</div>
+                    <div class="bank">SBI: 7.0%</div>
+                    <div class="bank">HDFC: 7.25%</div>
+                    <div class="bank">ICICI: 7.5%</div>
                 </div>
             </div>
         </div>

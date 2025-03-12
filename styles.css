@@ -1018,35 +1018,57 @@ footer {
 @media (max-width: 992px) {
     .nav-links, .auth-buttons {
         display: none;
-    }
-
-    .hamburger {
-        display: flex;
-    }
-
-    .nav-links.active, .auth-buttons.active {
         position: fixed;
-        top: 70px;
         left: 0;
-        flex-direction: column;
         width: 100%;
         background-color: white;
-        padding: 2rem;
         box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        display: flex;
         z-index: 100;
-        align-items: center;
     }
 
     .nav-links.active {
-        gap: 1.5rem;
+        top: 70px;
+        flex-direction: column;
+        gap: 0;
+        padding: 1rem 0;
         border-bottom: 1px solid var(--neutral-200);
+    }
+    
+    .nav-links.active a {
+        padding: 1rem 2rem;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .nav-links.active a::after {
+        display: none;
+    }
+    
+    .nav-links.active a.active {
+        background-color: var(--primary-light);
+        color: white;
     }
 
     .auth-buttons.active {
-        top: calc(70px + 2rem + 1.5rem * 5 + 2rem);
-        border-top: none;
-        padding-top: 0;
+        top: calc(70px + 4rem + 1rem * 5);
+        padding: 1.5rem;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+    
+    .auth-buttons.active button {
+        width: 45%;
+    }
+
+    /* Improved hamburger menu animation */
+    .hamburger {
+        display: flex;
+        z-index: 1010;
+        width: 40px;
+        height: 40px;
+        align-items: center;
+        justify-content: center;
     }
 }
 
@@ -1110,4 +1132,47 @@ footer {
         gap: 1rem;
         width: 100%;
     }
+    
+    .hero-buttons .btn {
+        width: 100%;
+    }
+    
+    h1 {
+        font-size: clamp(2rem, 8vw, 3.5rem);
+    }
+    
+    .hero p {
+        font-size: 1.1rem;
+    }
+    
+    .market-pulse {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .section-header p {
+        font-size: 1rem;
+    }
+}
+
+/* Improve animations and transitions */
+@keyframes animate-in {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.recommendation-card, .education-card, .insight-card {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease;
+}
+
+.animate-in {
+    animation: animate-in 0.6s ease forwards;
 }
