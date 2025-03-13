@@ -329,5 +329,27 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="js/global-fixes.js"></script>ript src="js/auth-utils.js"></script>
+</body>ript>
+</html>        // Fix for home page register button
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Direct event handler for register button if it exists
+            const registerBtn = document.querySelector('.auth-buttons .btn-primary');
+            if (registerBtn) {
+                registerBtn.addEventListener('click', function() {
+                    window.location.href = 'register.html';
+                });
+            }
+            
+            // Direct event handler for login button if it exists
+            const loginBtn = document.querySelector('.auth-buttons .btn-outline');
+            if (loginBtn && !loginBtn.id.includes('logout')) {
+                loginBtn.addEventListener('click', function() {
+                    window.location.href = 'login.html';
+                });
+            }
+        });
+    </script>
 </body>
 </html>

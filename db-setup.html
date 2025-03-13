@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Setup - Indivest</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .container {
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .output {
+            background-color: #f5f5f9;
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .setup-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+        }
+        .sql-statement {
+            font-family: monospace;
+            background-color: #f8fafc;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        button {
+            margin-right: 0.5rem;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <span class="logo-text">Indi<span class="logo-accent">vest</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="register-test.html">Test Registration</a>
+            <a href="db-setup.html" class="active">Database Setup</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <h1>Indivest Database Setup</h1>
+        <p>This page helps you set up the database tables required for Indivest.</p>
+        
+        <div class="output" id="output-log">Initializing...</div>
+        
+        <div class="setup-section">
+            <h2>1. User Profiles Table</h2>
+            <div class="sql-statement">
+CREATE TABLE IF NOT EXISTS user_profiles (
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    full_name TEXT,
+    date_of_birth DATE,
+    phone_number TEXT,
+    pan_number TEXT,
+    address TEXT,
+    risk_profile TEXT DEFAULT 'moderate',
+    monthly_investment NUMERIC(15, 2),
+    investment_horizon TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+            </div>
+            <button class="btn btn-primary" id="create-profiles-table">Create Table</button>
+            <button class="btn btn-outline" id="check-profiles-table">Check Table</button>
+        </div>
+        
+        <div class="setup-section">
+            <h2>2. Investment Goals Table</h2>
+            <div class="sql-statement">
+CREATE TABLE IF NOT EXISTS investment_goals (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    goal_name TEXT NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+            </div>
+            <button class="btn btn-primary" id="create-goals-table">Create Table</button>
+            <button class="btn btn-outline" id="check-goals-table">Check Table</button>
+        </div>
+        
+        <div class="setup-section">
+            <h2>3. User Assets Table</h2>
+            <div class="sql-statement">
+CREATE TABLE IF NOT EXISTS user_assets (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    asset_type TEXT NOT NULL,
+    asset_name TEXT NOT NULL,
+    provider TEXT,
+    purchase_value NUMERIC(15, 2),
+    current_value NUMERIC(15, 2),
+    purchase_date TIMESTAMP WITH TIME ZONE,
+    notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+            </div>
+            <button class="btn btn-primary" id="create-assets-table">Create Table</button>
+            <button class="btn btn-outline" id="check-assets-table">Check Table</button>
+        </div>
+        
+        <div class="setup-section">
+            <h2>4. Market Data Table</h2>
+            <div class="sql-statement">
+CREATE TABLE IF NOT EXISTS market_data (
+    id SERIAL PRIMARY KEY,
+    date DATE NOT NULL UNIQUE,
+    nifty_value NUMERIC(10, 2),
+    sensex_value NUMERIC(10, 2),
+    bank_nifty_value NUMERIC(10, 2),
+    gold_value NUMERIC(10, 2),
+    nifty_pe_ratio NUMERIC(6, 2),
+    market_mood TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+            </div>
+            <button class="btn btn-primary" id="create-market-table">Create Table</button>
+            <button class="btn btn-outline" id="check-market-table">Check Table</button>
+            <button class="btn btn-accent" id="seed-market-data">Seed Sample Data</button>
+        </div>
+        
+        <div class="setup-section">
+            <h2>5. Notification Settings Table</h2>
+            <div class="sql-statement">
+CREATE TABLE IF NOT EXISTS notification_settings (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    email_enabled BOOLEAN DEFAULT TRUE,
+    sms_enabled BOOLEAN DEFAULT TRUE,
+    push_enabled BOOLEAN DEFAULT TRUE,
+    whatsapp_enabled BOOLEAN DEFAULT FALSE,
+    portfolio_updates BOOLEAN DEFAULT TRUE,
+    market_alerts BOOLEAN DEFAULT TRUE,
+    investment_recommendations BOOLEAN DEFAULT TRUE,
+    educational_content BOOLEAN DEFAULT FALSE,
+    account_activity BOOLEAN DEFAULT TRUE,
+    frequency TEXT DEFAULT 'daily',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+            </div>
+            <button class="btn btn-primary" id="create-notifications-table">Create Table</button>
+            <button class="btn btn-outline" id="check-notifications-table">Check Table</button>
+        </div>
+        
+        <div class="setup-section">
+            <h2>6. Create User Profile Trigger</h2>
+            <div class="sql-statement">
+-- Function to automatically create a profile after signup
+CREATE OR REPLACE FUNCTION public.handle_new_user() 
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.user_profiles (id, full_name)
+  VALUES (NEW.id, NEW.raw_user_meta_data->>'full_name');
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Trigger the function every time a user is created
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+            </div>
+            <button class="btn btn-primary" id="create-trigger">Create Trigger</button>
+        </div>
+        
+        <div class="setup-section">
+            <h2>7. Setup Security Policies</h2>
+            <div class="sql-statement">
+-- Enable RLS (Row Level Security)
+ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE investment_goals ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_assets ENABLE ROW LEVEL SECURITY;
+ALTER TABLE notification_settings ENABLE ROW LEVEL SECURITY;
+
+-- Policies for user_profiles
+CREATE POLICY "Users can view their own profile" 
+ON user_profiles FOR SELECT 
+USING (auth.uid() = id);
+
+CREATE POLICY "Users can update their own profile" 
+ON user_profiles FOR UPDATE 
+USING (auth.uid() = id);
+
+-- Policies for investment_goals
+CREATE POLICY "Users can view their own goals" 
+ON investment_goals FOR SELECT 
+USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own goals" 
+ON investment_goals FOR UPDATE 
+USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own goals" 
+ON investment_goals FOR INSERT 
+WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own goals" 
+ON investment_goals FOR DELETE 
+USING (auth.uid() = user_id);
+
+-- Similar policies for other tables
+            </div>
+            <button class="btn btn-primary" id="setup-policies">Setup Policies</button>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize Supabase
+        const SUPABASE_URL = 'https://jfyspkdsurhcoqahhmnv.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpmeXNwa2RzdXJoY29xYWhobW52Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE3NjE5NTcsImV4cCI6MjA1NzMzNzk1N30.ddXNG8_9ghDmz0fXja4AaO8YbyaSvgxyB8WgGtcxbOc';
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            const outputLog = document.getElementById('output-log');
+            
+            // Log helper
+            function log(message) {
+                outputLog.innerHTML += '\n' + message;
+                outputLog.scrollTop = outputLog.scrollHeight;
+                console.log(message);
+            }
+            
+            // Initialize Supabase client
+            let supabase;
+            try {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                log('Supabase client initialized successfully.');
+                
+                // Test connection
+                const { data: { session } } = await supabase.auth.getSession();
+                log(session ? 'User is logged in.' : 'No active session.');
+                
+            } catch (error) {
+                log(`Error initializing Supabase: ${error.message}`);
+            }
+            
+            // Execute SQL function
+            async function executeSql(sql) {
+                try {
+                    // In a real app, we'd use stored procedures for security
+                    // For this demo, we're using simple queries with admin privileges
+                    const { data, error } = await supabase.rpc('execute_sql', { 
+                        sql_statement: sql 
+                    });
+                    
+                    if (error) {
+                        throw error;
+                    }
+                    
+                    return { success: true, data };
+                } catch (err) {
+                    log(`SQL Error: ${err.message}`);
+                    return { success: false, error: err };
+                }
+            }
+            
+            // Create user_profiles table
+            document.getElementById('create-profiles-table').addEventListener('click', async () => {
+                log('Creating user_profiles table...');
+                const sql = document.querySelector('.setup-section:nth-child(2) .sql-statement').textContent;
+                const result = await executeSql(sql);
+                log(result.success ? 'User profiles table created successfully!' : 'Failed to create user profiles table.');
+            });
+            
+            // Check user_profiles table
+            document.getElementById('check-profiles-table').addEventListener('click', async () => {
+                log('Checking user_profiles table...');
+                const { data, error } = await supabase.from('user_profiles').select('*').limit(5);
+                if (error) {
+                    log(`Error: ${error.message}`);
+                } else {
+                    log(`Found ${data.length} user profiles.`);
+                    if (data.length > 0) {
+                        log(JSON.stringify(data, null, 2));
+                    }
+                }
+            });
+            
+            // Create investment_goals table
+            document.getElementById('create-goals-table').addEventListener('click', async () => {
+                log('Creating investment_goals table...');
+                const sql = document.querySelector('.setup-section:nth-child(3) .sql-statement').textContent;
+                const result = await executeSql(sql);
+                log(result.success ? 'Investment goals table created successfully!' : 'Failed to create investment goals table.');
+            });
+            
+            // Check investment_goals table
+            document.getElementById('check-goals-table').addEventListener('click', async () => {
+                log('Checking investment_goals table...');
+                const { data, error } = await supabase.from('investment_goals').select('*').limit(5);
+                if (error) {
+                    log(`Error: ${error.message}`);
+                } else {
+                    log(`Found ${data.length} investment goals.`);
+                    if (data.length > 0) {
+                        log(JSON.stringify(data, null, 2));
+                    }
+                }
+            });
+            
+            // Create user_assets table
+            document.getElementById('create-assets-table').addEventListener('click', async () => {
+                log('Creating user_assets table...');
+                const sql = document.querySelector('.setup-section:nth-child(4) .sql-statement').textContent;
+                const result = await executeSql(sql);
+                log(result.success ? 'User assets table created successfully!' : 'Failed to create user assets table.');
+            });
+            
+            // Check user_assets table
+            document.getElementById('check-assets-table').addEventListener('click', async () => {
+                log('Checking user_assets table...');
+                const { data, error } = await supabase.from('user_assets').select('*').limit(5);
+                if (error) {
+                    log(`Error: ${error.message}`);
+                } else {
+                    log(`Found ${data.length} user assets.`);
+                    if (data.length > 0) {
+                        log(JSON.stringify(data, null, 2));
+                    }
+                }
+            });
+            
+            // Create market_data table
+            document.getElementById('create-market-table').addEventListener('click', async () => {
+                log('Creating market_data table...');
+                const sql = document.querySelector('.setup-section:nth-child(5) .sql-statement').textContent;
+                const result = await executeSql(sql);
+                log(result.success ? 'Market data table created successfully!' : 'Failed to create market data table.');
+            });
+            
+            // Check market_data table
+            document.getElementById('check-market-table').addEventListener('click', async () => {
+                log('Checking market_data table...');
+                const { data, error } = await supabase.from('market_data').select('*').limit(5);
+                if (error) {
+                    log(`Error: ${error.message}`);
+                } else {
+                    log(`Found ${data.length} market data entries.`);
+                    if (data.length > 0) {
+                        log(JSON.stringify(data, null, 2));
+                    }
+                }
+            });
+            
+            // Seed market data
+            document.getElementById('seed-market-data').addEventListener('click', async () => {
+                log('Seeding market data...');
+                
+                // Generate 30 days of market data
+                const marketData = [];
+                const today = new Date();
+                
+                for (let i = 29; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(today.getDate() - i);
+                    const formattedDate = date.toISOString().split('T')[0];
+                    
+                    // Generate realistic but random data
+                    const niftyBase = 22000;
+                    const sensexBase = 72000;
+                    const bankNiftyBase = 48000;
+                    const goldBase = 6000;
+                    const peRatioBase = 19.5;
+                    
+                    // Add some randomness to simulate market fluctuations
+                    const randomFactor = Math.random() * 0.02 - 0.01; // -1% to +1%
+                    
+                    const nifty = niftyBase * (1 + randomFactor + (i * 0.001));
+                    const sensex = sensexBase * (1 + randomFactor + (i * 0.001));
+                    const bankNifty = bankNiftyBase * (1 + randomFactor + (i * 0.001));
+                    const gold = goldBase * (1 + randomFactor + (i * 0.0005));
+                    const peRatio = peRatioBase * (1 + randomFactor * 2);
+                    
+                    // Determine market mood
+                    let marketMood;
+                    if (peRatio < 17) marketMood = 'bearish';
+                    else if (peRatio > 22) marketMood = 'bullish';
+                    else marketMood = 'neutral';
+                    
+                    marketData.push({
+                        date: formattedDate,
+                        nifty_value: nifty.toFixed(2),
+                        sensex_value: sensex.toFixed(2),
+                        bank_nifty_value: bankNifty.toFixed(2),
+                        gold_value: gold.toFixed(2),
+                        nifty_pe_ratio: peRatio.toFixed(2),
+                        market_mood: marketMood
+                    });
+                }
+                
+                // Insert data
+                const { data, error } = await supabase
+                    .from('market_data')
+                    .upsert(marketData, { onConflict: 'date' });
+                
+                if (error) {
+                    log(`Error seeding market data: ${error.message}`);
+                } else {
+                    log('Market data seeded successfully!');
+                }
+            });
+            
+            // Create notification_settings table
+            document.getElementById('create-notifications-table').addEventListener('click', async () => {
+                log('Creating notification_settings table...');
+                const sql = document.querySelector('.setup-section:nth-child(6) .sql-statement').textContent;
+                const result = await executeSql(sql);
+                log(result.success ? 'Notification settings table created successfully!' : 'Failed to create notification settings table.');
+            });
+            
+            // Check notification_settings table
+            document.getElementById('check-notifications-table').addEventListener('click', async () => {
+                log('Checking notification_settings table...');
+                const { data, error } = await supabase.from('notification_settings').select('*').limit(5);
+                if (error) {
+                    log(`Error: ${error.message}`);
+                } else {
+                    log(`Found ${data.length} notification settings.`);
+                    if (data.length > 0) {
+                        log(JSON.stringify(data, null, 2));
+                    }
+                }
+            });
+            
+            // Create user profile trigger
+            document.getElementById('create-trigger').addEventListener('click', async () => {
+                log('Creating user profile trigger...');
+                const sql = document.querySelector('.setup-section:nth-child(7) .sql-statement').textContent;
+                const result = await executeSql(sql);
+                log(result.success ? 'User profile trigger created successfully!' : 'Failed to create user profile trigger.');
+            });
+            
+            // Setup security policies
+            document.getElementById('setup-policies').addEventListener('click', async () => {
+                log('Setting up security policies...');
+                const sql = document.querySelector('.setup-section:nth-child(8) .sql-statement').textContent;
+                const result = await executeSql(sql);
+                log(result.success ? 'Security policies set up successfully!' : 'Failed to set up security policies.');
+            });
+        });
+    </script>
+</body>
+</html>

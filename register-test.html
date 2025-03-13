@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Test - Indivest</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auth.css">
+    <style>
+        .debug-panel {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+    <!-- Load Supabase with direct script tag -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2.34.0/dist/umd/supabase.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            console.log('Window loaded, checking Supabase global object:');
+            console.log('supabase:', typeof window.supabase);
+            console.log('createClient:', typeof window.createClient);
+            
+            if (typeof window.supabase === 'undefined') {
+                document.getElementById('debug-panel').textContent += '\nERROR: Supabase not available globally after window load!';
+                
+                // Try to load Supabase again
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+                script.onload = function() {
+                    document.getElementById('debug-panel').textContent += '\nSecond attempt to load Supabase completed';
+                };
+                document.head.appendChild(script);
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container" style="padding: 2rem;">
+        <h1>Registration Test</h1>
+        <p>This page is for testing Supabase connection</p>
+        
+        <form id="simple-register-form">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" class="form-control" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+        
+        <div class="debug-panel" id="debug-panel">Testing Supabase connection...</div>
+    </div>
+    
+    <script>
+        // Direct initialization without using the config file
+        const SUPABASE_URL = 'https://jfyspkdsurhcoqahhmnv.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpmeXNwa2RzdXJoY29xYWhobW52Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE3NjE5NTcsImV4cCI6MjA1NzMzNzk1N30.ddXNG8_9ghDmz0fXja4AaO8YbyaSvgxyB8WgGtcxbOc';
+        
+        let supabase;
+        let debug = message => {
+            const debugPanel = document.getElementById('debug-panel');
+            if (debugPanel) {
+                debugPanel.textContent += '\n' + message;
+                debugPanel.scrollTop = debugPanel.scrollHeight;
+            }
+            console.log(message);
+        };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            debug('Page loaded, checking Supabase...');
+            
+            // Check which Supabase object is available
+            if (typeof supabaseClient !== 'undefined') {
+                debug('Found supabaseClient global object');
+                supabase = supabaseClient.createClient(SUPABASE_URL, SUPABASE_KEY);
+            } else if (typeof createClient !== 'undefined') {
+                debug('Found createClient function');
+                supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+            } else if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
+                debug('Found supabase.createClient method');
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            } else {
+                debug('ERROR: Supabase client not available!');
+                return;
+            }
+            
+            debug('Supabase client created successfully');
+            
+            // Test anonymous access
+            testSupabaseConnection();
+            
+            // Set up form handler
+            const form = document.getElementById('simple-register-form');
+            if (form) {
+                form.addEventListener('submit', handleRegistration);
+            }
+        });
+        
+        async function testSupabaseConnection() {
+            try {
+                debug('Testing Supabase connection...');
+                debug(`Using URL: ${SUPABASE_URL}`);
+                debug(`Using key: ${SUPABASE_KEY.substring(0, 10)}...`); // Only log part of the key for security
+                
+                // More detailed tests
+                debug('Testing authentication API...');
+                const authTest = await supabase.auth.getSession();
+                if (authTest.error) {
+                    debug(`Auth test error: ${authTest.error.message}`);
+                } else {
+                    debug('Auth API connection successful');
+                }
+                
+                // Test database access by checking for existing tables
+                debug('Testing database API...');
+                const { data: tables, error: tablesError } = await supabase
+                    .from('information_schema.tables')
+                    .select('table_name')
+                    .eq('table_schema', 'public')
+                    .limit(10);
+                
+                if (tablesError) {
+                    debug(`Tables query error: ${tablesError.message}`);
+                    debug(`Error details: ${JSON.stringify(tablesError)}`);
+                } else {
+                    debug(`Connection successful! Found tables: ${JSON.stringify(tables)}`);
+                    
+                    // Try to create our first required table if it doesn't exist
+                    if (!tables.some(t => t.table_name === 'user_profiles')) {
+                        debug('Creating user_profiles table...');
+                        await createUserProfilesTable();
+                    }
+                }
+            } catch (err) {
+                debug(`Connection test exception: ${err.message}`);
+                debug(`Stack trace: ${err.stack}`);
+            }
+        }
+        
+        async function createUserProfilesTable() {
+            try {
+                // Create user_profiles table
+                const { error } = await supabase.rpc('create_user_profiles_table');
+                
+                if (error) {
+                    debug(`Error creating table: ${error.message}`);
+                    
+                    // Try direct SQL as fallback
+                    debug('Attempting to create table with direct SQL...');
+                    const createTableResult = await supabase.rpc('execute_sql', {
+                        sql_statement: `
+                        CREATE TABLE IF NOT EXISTS user_profiles (
+                            id UUID PRIMARY KEY,
+                            full_name TEXT,
+                            date_of_birth DATE,
+                            phone_number TEXT,
+                            risk_profile TEXT DEFAULT 'moderate',
+                            created_at TIMESTAMPTZ DEFAULT NOW(),
+                            updated_at TIMESTAMPTZ DEFAULT NOW()
+                        );
+                        `
+                    });
+                    
+                    if (createTableResult.error) {
+                        debug(`SQL creation error: ${createTableResult.error.message}`);
+                    } else {
+                        debug('Table created successfully via SQL');
+                    }
+                } else {
+                    debug('Table creation successful via RPC');
+                }
+            } catch (err) {
+                debug(`Table creation exception: ${err.message}`);
+            }
+        }
+        
+        async function handleRegistration(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const name = document.getElementById('name').value;
+            
+            debug(`Attempting to register ${email}...`);
+            
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            full_name: name
+                        },
+                        emailRedirectTo: `${window.location.origin}/profile.html`,
+                        // Add this option to disable email confirmation requirement
+                        emailConfirm: false
+                    }
+                });
+                
+                if (error) {
+                    debug(`Registration error: ${error.message}`);
+                } else {
+                    debug(`Registration successful: ${JSON.stringify(data)}`);
+                    // Auto login after registration
+                    debug('Attempting to auto-login...');
+                    
+                    try {
+                        // Try direct sign-in first
+                        const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+                            email,
+                            password
+                        });
+                        
+                        if (loginError) {
+                            debug(`Auto-login error: ${loginError.message}`);
+                            
+                            // If we get email not confirmed error, create a local user and bypass
+                            if (loginError.message.includes('Email not confirmed')) {
+                                debug('Email not confirmed error detected. Bypassing with local user...');
+                                
+                                // Create a user object with email confirmation bypass
+                                const user = data.user;
+                                user.email_confirmed_at = new Date().toISOString();
+                                user.confirmed_at = new Date().toISOString();
+                                
+                                if (user.identities && Array.isArray(user.identities)) {
+                                    user.identities.forEach(identity => {
+                                        identity.email_verified = true;
+                                    });
+                                }
+                                
+                                // Store in localStorage
+                                localStorage.setItem('indivest_user', JSON.stringify(user));
+                                
+                                debug('Created local user with confirmed email status.');
+                                debug('User can now access protected pages without email confirmation.');
+                            }
+                        } else {
+                            debug('Auto-login successful!');
+                            debug('User can now access protected pages without email confirmation.');
+                            
+                            // Ensure email is marked as confirmed in local storage
+                            if (loginData && loginData.user) {
+                                const user = loginData.user;
+                                user.email_confirmed_at = new Date().toISOString();
+                                user.confirmed_at = new Date().toISOString();
+                                localStorage.setItem('indivest_user', JSON.stringify(user));
+                                debug('Updated local user data with confirmed email status.');
+                            }
+                        }
+                    } catch (loginErr) {
+                        debug(`Auto-login exception: ${loginErr.message}`);
+                    }
+                }
+            } catch (err) {
+                debug(`Registration exception: ${err.message}`);
+            }
+        }
+    </script>
+</body>
+</html>

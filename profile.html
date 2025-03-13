@@ -665,5 +665,75 @@
     <script src="script.js"></script>
     <script src="chart-utils.js"></script>
     <script src="profile.js"></script>
+    <script src="js/global-fixes.js"></script>- Add this right after the supabase-config.js script -->
+</body>ript>
+</html>        // Fix profile page authentication
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const storedUser = localStorage.getItem('indivest_user');
+            
+            if (!storedUser) {
+                // No user found, redirect to login
+                if (!sessionStorage.getItem('auth_redirect_in_progress')) {
+                    sessionStorage.setItem('auth_redirect_in_progress', 'true');
+                    window.location.href = 'login.html';
+                    return;
+                }
+            } else {
+                try {
+                    // Parse user data
+                    const user = JSON.parse(storedUser);
+                    
+                    // Update profile info with user data
+                    const profileNameH1 = document.querySelector('.profile-info h1');
+                    if (profileNameH1) {
+                        profileNameH1.textContent = user.user_metadata?.full_name || user.email.split('@')[0];
+                    }
+                    
+                    // Fix user greeting in nav
+                    const userGreeting = document.querySelector('.auth-buttons .user-greeting');
+                    if (userGreeting) {
+                        userGreeting.textContent = 'Hello, ' + (user.user_metadata?.full_name || user.email.split('@')[0]);
+                    } else {
+                        // Force correct auth buttons if greeting not found
+                        const authButtons = document.querySelector('.auth-buttons');
+                        if (authButtons) {
+                            authButtons.innerHTML = `
+                                <span class="user-greeting">Hello, ${user.user_metadata?.full_name || user.email.split('@')[0]}</span>
+                                <button class="btn btn-outline" id="logout-btn">Logout</button>
+                            `;
+                            
+                            // Add logout event listener
+                            document.getElementById('logout-btn')?.addEventListener('click', function() {
+                                localStorage.removeItem('indivest_user');
+                                window.location.href = 'index.html';
+                            });
+                        }
+                    }
+                    
+                    // Update profile avatar
+                    const avatarImg = document.querySelector('.profile-avatar img');
+                    if (avatarImg) {
+                        const name = encodeURIComponent(user.user_metadata?.full_name || user.email.split('@')[0]);
+                        avatarImg.src = `https://ui-avatars.com/api/?name=${name}&background=3b82f6&color=fff&size=128`;
+                    }
+                    
+                    // Update form fields
+                    const fullnameInput = document.getElementById('fullname');
+                    if (fullnameInput) {
+                        fullnameInput.value = user.user_metadata?.full_name || '';
+                    }
+                    
+                    const emailInput = document.getElementById('email');
+                    if (emailInput) {
+                        emailInput.value = user.email || '';
+                    }
+                } catch (e) {
+                    console.error('Error parsing user data:', e);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
