@@ -19,7 +19,7 @@
     
     // Fix email confirmation status in user object
     function fixEmailConfirmationStatus() {
-        const storedUser = localStorage.getItem('indivest_user');
+        const storedUser = localStorage.getItem('stoxmate_user') || localStorage.getItem('indivest_user');
         if (!storedUser) return;
         
         try {
@@ -51,7 +51,12 @@
             // Save back to localStorage if changes were made
             if (updated) {
                 console.log('Fixed email confirmation status for user:', user.email);
-                localStorage.setItem('indivest_user', JSON.stringify(user));
+                localStorage.setItem('stoxmate_user', JSON.stringify(user));
+                
+                // Remove old key if it exists
+                if (localStorage.getItem('indivest_user')) {
+                    localStorage.removeItem('indivest_user');
+                }
             }
         } catch (error) {
             console.error('Error fixing email confirmation:', error);
@@ -125,8 +130,8 @@
                 }
             };
             
-            // Store in localStorage
-            localStorage.setItem('indivest_user', JSON.stringify(tempUser));
+            // Store in localStorage - update storage key name
+            localStorage.setItem('stoxmate_user', JSON.stringify(tempUser));
             
             // Show success message if possible
             const messageElement = document.getElementById('form-message');
@@ -166,7 +171,9 @@
                 const text = messageElement.innerText || messageElement.textContent;
                 
                 // If we see a success message but no user is stored, create one
-                if (text && text.includes('successful') && !localStorage.getItem('indivest_user')) {
+                if (text && text.includes('successful') && 
+                    !localStorage.getItem('stoxmate_user') && 
+                    !localStorage.getItem('indivest_user')) {
                     const emailInput = document.getElementById('email');
                     const fullNameInput = document.getElementById('full-name');
                     
@@ -185,7 +192,7 @@
                             }
                         };
                         
-                        localStorage.setItem('indivest_user', JSON.stringify(user));
+                        localStorage.setItem('stoxmate_user', JSON.stringify(user));
                         console.log('Created local user after registration');
                     }
                 }

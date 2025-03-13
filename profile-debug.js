@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function fixDisplayName() {
-        const storedUser = localStorage.getItem('indivest_user');
+        const storedUser = localStorage.getItem('stoxmate_user') || localStorage.getItem('indivest_user');
         if (!storedUser) {
             appendLine('No user data found to fix display name');
             return;

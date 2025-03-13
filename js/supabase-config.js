@@ -1,4 +1,4 @@
-// Supabase configuration for Indivest app
+// Supabase configuration for StoxMate app
 
 // Environment-specific configurations
 const ENV = {
@@ -84,7 +84,7 @@ supabase.auth.onAuthStateChange((event, session) => {
             }
             
             // Always store the user - either original or fixed version
-            localStorage.setItem('indivest_user', JSON.stringify(user));
+            localStorage.setItem('stoxmate_user', JSON.stringify(user));
             
             // If there was a fix applied, log it
             if (needsUpdate) {
@@ -105,7 +105,7 @@ supabase.auth.onAuthStateChange((event, session) => {
         console.log('User signed out');
         updateUserUI(null);
         // Clear user session
-        localStorage.removeItem('indivest_user');
+        localStorage.removeItem('stoxmate_user');
     } else if (event === 'PASSWORD_RECOVERY') {
         // Handle password recovery event
         if (window.location.pathname !== '/update-password.html') {
@@ -127,7 +127,7 @@ async function ensureEmailConfirmed(userId, bypass = false) {
                 user.confirmed_at = user.email_confirmed_at;
                 
                 // Store in localStorage
-                localStorage.setItem('indivest_user', JSON.stringify(user));
+                localStorage.setItem('stoxmate_user', JSON.stringify(user));
                 console.log('Auto-confirmed email in localStorage');
                 return true;
             }
@@ -156,8 +156,8 @@ async function checkUser() {
 
 // Check if essential tables exist (to be called after API utils are loaded)
 async function checkDatabaseTables() {
-    if (window.indivest.API && typeof window.indivest.API.checkAndSetupTables === 'function') {
-        return await window.indivest.API.checkAndSetupTables();
+    if (window.stoxmate.API && typeof window.stoxmate.API.checkAndSetupTables === 'function') {
+        return await window.stoxmate.API.checkAndSetupTables();
     }
     return false;
 }
@@ -181,7 +181,7 @@ function updateUserUI(user) {
                     try {
                         const { error } = await supabase.auth.signOut();
                         if (error) throw error;
-                        localStorage.removeItem('indivest_user'); // Clear local storage immediately
+                        localStorage.removeItem('stoxmate_user'); // Clear local storage immediately
                         window.location.href = 'index.html';
                     } catch (err) {
                         console.error('Error signing out:', err);
@@ -240,7 +240,7 @@ function updateUserUI(user) {
     }
     
     // Dispatch an event to notify that auth UI has been updated
-    document.dispatchEvent(new CustomEvent('indivest:authupdated', { detail: { user } }));
+    document.dispatchEvent(new CustomEvent('stoxmate:authupdated', { detail: { user } }));
 }
 
 // Error handling helper
@@ -299,11 +299,11 @@ async function validateLogin(email, password) {
 }
 
 // Export the Supabase client and auth functions
-window.indivest = {
+window.stoxmate = {
     supabase,
     checkUser,
     checkDatabaseTables,
     handleError,
     ensureEmailConfirmed,
-    validateLogin    // Add the new function to the exports
+    validateLogin
 };

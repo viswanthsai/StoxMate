@@ -34,7 +34,8 @@
                     button.hasEventListener = true;
                 } else if (text === 'logout' || text.includes('log out') || text.includes('sign out')) {
                     button.addEventListener('click', function() {
-                        localStorage.removeItem('indivest_user');
+                        // Update to remove stoxmate_user instead of indivest_user
+                        localStorage.removeItem('stoxmate_user');
                         window.location.href = 'index.html';
                     });
                     button.hasEventListener = true;
@@ -44,7 +45,8 @@
     }
     
     function fixProfilePage() {
-        const storedUser = localStorage.getItem('indivest_user');
+        // Updated key names
+        const storedUser = localStorage.getItem('stoxmate_user') || localStorage.getItem('indivest_user');
         
         if (!storedUser) {
             // Redirect to login if not logged in
@@ -82,7 +84,7 @@
                         if (document.getElementById('fullname')) {
                             user.user_metadata = user.user_metadata || {};
                             user.user_metadata.full_name = document.getElementById('fullname').value;
-                            localStorage.setItem('indivest_user', JSON.stringify(user));
+                            localStorage.setItem('stoxmate_user', JSON.stringify(user));
                         }
                         
                         // Show success message

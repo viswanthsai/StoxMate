@@ -339,3 +339,597 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 300 * index);
     });
 });
+
+/**
+ * Asset Allocation Calculator
+ * Handles both simple and advanced calculation modes
+ */
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle calculation mode tabs
+    const simpleModeTab = document.querySelector('.calc-tab[data-mode="simple"]');
+    const advancedModeTab = document.querySelector('.calc-tab[data-mode="advanced"]');
+    const simpleFields = document.querySelector('.simple-calculation-fields');
+    const advancedFields = document.querySelector('.advanced-calculation-fields');
+    const modeDescription = document.getElementById('mode-description');
+    let currentMode = 'simple';
+    
+    // Tab switching
+    if (simpleModeTab && advancedModeTab) {
+        simpleModeTab.addEventListener('click', function() {
+            simpleModeTab.classList.add('active');
+            advancedModeTab.classList.remove('active');
+            simpleFields.style.display = 'block';
+            advancedFields.classList.remove('active');
+            currentMode = 'simple';
+            
+            // Update description
+            modeDescription.innerHTML = '<strong>Simple calculation</strong> provides a quick allocation based on your risk profile and investment duration. Perfect for new investors or quick planning.';
+        });
+        
+        advancedModeTab.addEventListener('click', function() {
+            advancedModeTab.classList.add('active');
+            simpleModeTab.classList.remove('active');
+            simpleFields.style.display = 'none';
+            advancedFields.classList.add('active');
+            currentMode = 'advanced';
+            
+            // Update description
+            modeDescription.innerHTML = '<strong>Advanced calculation</strong> considers additional factors like tax bracket, inflation expectations, and market conditions for a more comprehensive allocation strategy.';
+            
+            // Sync values from simple to advanced fields (one-way)
+            document.getElementById('adv-investment-amount').value = document.getElementById('investment-amount').value;
+            document.getElementById('adv-investment-horizon').value = document.getElementById('investment-horizon').value;
+            document.getElementById('adv-risk-tolerance').value = document.getElementById('risk-tolerance').value;
+            document.getElementById('adv-monthly-contribution').value = document.getElementById('monthly-contribution').value;
+            
+            // Update advanced risk display
+            updateAdvancedRiskDisplay();
+        });
+    }
+    
+    // Initialize risk slider behavior
+    const riskSlider = document.getElementById('risk-tolerance');
+    const riskValue = document.querySelector('.risk-value');
+    const riskDescription = document.getElementById('risk-description');
+    
+    const advRiskSlider = document.getElementById('adv-risk-tolerance');
+    const advRiskValue = document.getElementById('adv-risk-value');
+    const advRiskDescription = document.getElementById('adv-risk-description');
+    
+    if (riskSlider && riskValue && riskDescription) {
+        riskSlider.addEventListener('input', updateRiskDisplay);
+        updateRiskDisplay(); // Initialize with default value
+    }
+    
+    if (advRiskSlider && advRiskValue && advRiskDescription) {
+        advRiskSlider.addEventListener('input', updateAdvancedRiskDisplay);
+    }
+    
+    function updateRiskDisplay() {
+        const value = riskSlider.value;
+        setRiskInfo(value, riskValue, riskDescription);
+    }
+    
+    function updateAdvancedRiskDisplay() {
+        const value = advRiskSlider.value;
+        setRiskInfo(value, advRiskValue, advRiskDescription);
+    }
+    
+    function setRiskInfo(value, valueElement, descriptionElement) {
+        let riskText, description;
+        
+        switch(parseInt(value)) {
+            case 1:
+                riskText = 'Very Conservative';
+                description = 'Prioritizes capital preservation with minimal risk. Expect lower returns with minimal fluctuations.';
+                break;
+            case 2:
+                riskText = 'Conservative';
+                description = 'Focuses on stability with some growth potential. Small market fluctuations may occur.';
+                break;
+            case 3:
+                riskText = 'Moderate';
+                description = 'Balanced approach with moderate market fluctuations. Aims for medium-term growth.';
+                break;
+            case 4:
+                riskText = 'Aggressive';
+                description = 'Growth-oriented strategy with higher volatility. Suitable for longer investment horizons.';
+                break;
+            case 5:
+                riskText = 'Very Aggressive';
+                description = 'Maximum growth potential with significant market fluctuations. For long-term investors comfortable with volatility.';
+                break;
+            default:
+                riskText = 'Moderate';
+                description = 'Balanced approach with moderate market fluctuations.';
+        }
+        
+        valueElement.textContent = riskText;
+        descriptionElement.textContent = description;
+    }
+    
+    // Handle form submission
+    const allocationForm = document.getElementById('allocation-form');
+    const resultsSection = document.getElementById('allocation-results');
+    
+    if (allocationForm) {
+        allocationForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data based on current mode
+            let formData;
+            if (currentMode === 'simple') {
+                formData = {
+                    mode: 'simple',
+                    investmentAmount: parseFloat(document.getElementById('investment-amount').value) || 100000,
+                    investmentHorizon: document.getElementById('investment-horizon').value || '3-7',
+                    riskTolerance: parseInt(document.getElementById('risk-tolerance').value) || 3,
+                    monthlyContribution: parseFloat(document.getElementById('monthly-contribution').value) || 0
+                };
+            } else {
+                formData = {
+                    mode: 'advanced',
+                    investmentAmount: parseFloat(document.getElementById('adv-investment-amount').value) || 100000,
+                    investmentHorizon: document.getElementById('adv-investment-horizon').value || '3-7',
+                    riskTolerance: parseInt(document.getElementById('adv-risk-tolerance').value) || 3,
+                    monthlyContribution: parseFloat(document.getElementById('adv-monthly-contribution').value) || 0,
+                    currentInvestments: parseFloat(document.getElementById('current-investments').value) || 0,
+                    inflationRate: parseFloat(document.getElementById('inflation-rate').value) || 6.0,
+                    taxBracket: parseInt(document.getElementById('tax-bracket').value) || 0,
+                    existingEquity: parseFloat(document.getElementById('existing-equity').value) || 0,
+                    existingDebt: parseFloat(document.getElementById('existing-debt').value) || 0,
+                    useCurrentMarket: document.querySelector('input[name="market-outlook"]:checked').value === 'current',
+                    goals: Array.from(document.querySelectorAll('input[name="goals"]:checked')).map(el => el.value)
+                };
+            }
+            
+            // Calculate allocation based on inputs
+            const allocation = calculateAllocation(formData);
+            
+            // Display results
+            displayResults(allocation, formData);
+            
+            // Show results section
+            resultsSection.style.display = 'block';
+            
+            // Show recommendations for advanced mode
+            document.getElementById('investment-recommendations').style.display = 
+                formData.mode === 'advanced' ? 'block' : 'none';
+            
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+    
+    // Edit allocation button functionality
+    document.getElementById('edit-allocation-btn')?.addEventListener('click', function() {
+        window.scrollTo({
+            top: document.querySelector('.allocation-form').offsetTop - 100,
+            behavior: 'smooth'
+        });
+    });
+    
+    // Calculate allocation based on inputs
+    function calculateAllocation(formData) {
+        // Base allocation percentages by risk level (1-5)
+        const baseAllocations = [
+            { equity: 20, debt: 50, gold: 20, cash: 10 }, // Very Conservative
+            { equity: 35, debt: 40, gold: 15, cash: 10 }, // Conservative
+            { equity: 50, debt: 30, gold: 15, cash: 5 },  // Moderate
+            { equity: 70, debt: 20, gold: 7, cash: 3 },   // Aggressive
+            { equity: 85, debt: 10, gold: 3, cash: 2 }    // Very Aggressive
+        ];
+        
+        // Get base allocation by risk level (0-indexed)
+        let allocation = { ...baseAllocations[formData.riskTolerance - 1] };
+        
+        // Adjust based on investment horizon
+        if (formData.investmentHorizon === '1-3') {
+            // Short term: Less equity, more debt and cash
+            allocation.equity = Math.max(allocation.equity - 15, 10);
+            allocation.debt += 10;
+            allocation.cash += 5;
+        } else if (formData.investmentHorizon === '7-10') {
+            // Long term: More equity, less cash
+            allocation.equity = Math.min(allocation.equity + 10, 90);
+            allocation.cash = Math.max(allocation.cash - 5, 0);
+        } else if (formData.investmentHorizon === '10+') {
+            // Very long term: Maximum equity
+            allocation.equity = Math.min(allocation.equity + 15, 95);
+            allocation.cash = Math.max(allocation.cash - 5, 0);
+        }
+        
+        // For advanced mode, apply additional adjustments
+        if (formData.mode === 'advanced') {
+            // Adjust for inflation rate if high
+            if (formData.inflationRate > 7) {
+                allocation.equity = Math.min(allocation.equity + 5, 95);
+                allocation.gold = Math.min(allocation.gold + 5, 25);
+                allocation.cash = Math.max(allocation.cash - 5, 0);
+            }
+            
+            // Adjust for tax bracket
+            if (formData.taxBracket >= 20) {
+                allocation.debt -= 5;
+                allocation.equity += 5;
+            }
+            
+            // Adjust for current market conditions
+            if (formData.useCurrentMarket) {
+                allocation.equity -= 3;
+                allocation.debt += 3;
+            }
+            
+            // Adjust for goals
+            if (formData.goals?.includes('retirement')) {
+                allocation.equity = Math.min(allocation.equity + 5, 95);
+            }
+            
+            if (formData.goals?.includes('income')) {
+                allocation.debt = Math.min(allocation.debt + 8, 70);
+                allocation.equity = Math.max(allocation.equity - 8, 10);
+            }
+            
+            if (formData.goals?.includes('tax-saving')) {
+                allocation.equity = Math.min(allocation.equity + 5, 95);
+                allocation.debt -= 5;
+            }
+        }
+        
+        // Ensure allocations add up to 100%
+        let total = allocation.equity + allocation.debt + allocation.gold + allocation.cash;
+        if (total !== 100) {
+            // Normalize all values
+            allocation.equity = Math.round(allocation.equity * 100 / total);
+            allocation.debt = Math.round(allocation.debt * 100 / total);
+            allocation.gold = Math.round(allocation.gold * 100 / total);
+            
+            // Ensure everything adds to 100% by adjusting cash
+            const subtotal = allocation.equity + allocation.debt + allocation.gold;
+            allocation.cash = 100 - subtotal;
+        }
+        
+        // Calculate amounts for each asset class
+        const amount = formData.investmentAmount;
+        allocation.equityAmount = Math.round(amount * allocation.equity / 100);
+        allocation.debtAmount = Math.round(amount * allocation.debt / 100);
+        allocation.goldAmount = Math.round(amount * allocation.gold / 100);
+        allocation.cashAmount = amount - allocation.equityAmount - allocation.debtAmount - allocation.goldAmount;
+        
+        // Calculate expected returns
+        const expectedReturns = {
+            equity: 12,
+            debt: 7,
+            gold: 8,
+            cash: 3
+        };
+        
+        // Calculate weighted average expected return
+        allocation.expectedReturn = (
+            (allocation.equity * expectedReturns.equity) +
+            (allocation.debt * expectedReturns.debt) +
+            (allocation.gold * expectedReturns.gold) +
+            (allocation.cash * expectedReturns.cash)
+        ) / 100;
+        
+        // Calculate years from investment horizon
+        let years;
+        switch (formData.investmentHorizon) {
+            case '1-3': years = 3; break;
+            case '3-7': years = 5; break;
+            case '7-10': years = 8; break;
+            case '10+': years = 10; break;
+            default: years = 5;
+        }
+        allocation.years = years;
+        
+        // Calculate projected value
+        allocation.projectedValue = calculateProjectedValue(
+            formData.investmentAmount,
+            formData.monthlyContribution,
+            allocation.expectedReturn,
+            years
+        );
+        
+        return allocation;
+    }
+    
+    // Calculate projected value with monthly contributions
+    function calculateProjectedValue(principal, monthlyContribution, annualRate, years) {
+        const monthlyRate = annualRate / 100 / 12;
+        const months = years * 12;
+        
+        // Calculate future value of initial investment
+        const fvInitial = principal * Math.pow(1 + (annualRate / 100), years);
+        
+        // Calculate future value of monthly contributions
+        let fvMonthly = 0;
+        if (monthlyContribution > 0) {
+            if (monthlyRate > 0) {
+                fvMonthly = monthlyContribution * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+            } else {
+                fvMonthly = monthlyContribution * months;
+            }
+        }
+        
+        return Math.round(fvInitial + fvMonthly);
+    }
+    
+    // Display allocation results
+    function displayResults(allocation, formData) {
+        // Update summary card
+        document.getElementById('total-investment-value').textContent = `₹${formatNumber(formData.investmentAmount)}`;
+        document.getElementById('total-monthly').textContent = `₹${formatNumber(formData.monthlyContribution)}`;
+        document.getElementById('expected-return').textContent = `+${allocation.expectedReturn.toFixed(1)}%`;
+        document.getElementById('projected-value').textContent = `₹${formatNumber(allocation.projectedValue)}`;
+        document.getElementById('projection-years').textContent = allocation.years;
+        
+        // Create chart
+        createAllocationChart(allocation);
+        
+        // Update table
+        const tableBody = document.getElementById('allocation-table-body');
+        tableBody.innerHTML = `
+            <tr>
+                <td>Equity</td>
+                <td>${allocation.equity}%</td>
+                <td>₹${formatNumber(allocation.equityAmount)}</td>
+            </tr>
+            <tr>
+                <td>Debt</td>
+                <td>${allocation.debt}%</td>
+                <td>₹${formatNumber(allocation.debtAmount)}</td>
+            </tr>
+            <tr>
+                <td>Gold</td>
+                <td>${allocation.gold}%</td>
+                <td>₹${formatNumber(allocation.goldAmount)}</td>
+            </tr>
+            <tr>
+                <td>Cash</td>
+                <td>${allocation.cash}%</td>
+                <td>₹${formatNumber(allocation.cashAmount)}</td>
+            </tr>
+        `;
+        
+        // Update total
+        document.getElementById('allocation-total').innerHTML = `<strong>₹${formatNumber(formData.investmentAmount)}</strong>`;
+        
+        // Generate investment recommendations if in advanced mode
+        if (formData.mode === 'advanced') {
+            generateRecommendations(allocation);
+        }
+        
+        // Generate allocation notes
+        document.getElementById('allocation-notes').innerHTML = generateNotes(allocation, formData);
+    }
+    
+    // Create allocation chart
+    function createAllocationChart(allocation) {
+        const ctx = document.getElementById('allocation-chart').getContext('2d');
+        
+        // Destroy existing chart if it exists
+        if (window.allocationChart) {
+            window.allocationChart.destroy();
+        }
+        
+        window.allocationChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Equity', 'Debt', 'Gold', 'Cash'],
+                datasets: [{
+                    data: [allocation.equity, allocation.debt, allocation.gold, allocation.cash],
+                    backgroundColor: [
+                        '#3b82f6', // Blue for equity
+                        '#f59e0b', // Amber for debt
+                        '#fcd34d', // Yellow for gold
+                        '#9ca3af'  // Gray for cash
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                return `${label}: ${value}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Generate investment recommendations for advanced mode
+    function generateRecommendations(allocation) {
+        const container = document.getElementById('recommendations-container');
+        container.innerHTML = '';
+        
+        // Equity recommendations
+        if (allocation.equity > 0) {
+            let equityHtml = '<div class="recommendation-card">';
+            equityHtml += '<h4><i class="fas fa-chart-line"></i> Equity (₹' + formatNumber(allocation.equityAmount) + ')</h4>';
+            equityHtml += '<ul>';
+            equityHtml += '<li>Nifty 50 Index Fund - 40%</li>';
+            equityHtml += '<li>Blue Chip Equity Fund - 40%</li>';
+            equityHtml += '<li>Mid-Cap Fund - 20%</li>';
+            equityHtml += '</ul></div>';
+            container.innerHTML += equityHtml;
+        }
+        
+        // Debt recommendations
+        if (allocation.debt > 0) {
+            let debtHtml = '<div class="recommendation-card">';
+            debtHtml += '<h4><i class="fas fa-landmark"></i> Debt (₹' + formatNumber(allocation.debtAmount) + ')</h4>';
+            debtHtml += '<ul>';
+            debtHtml += '<li>Government Securities Fund - 40%</li>';
+            debtHtml += '<li>Corporate Bond Fund - 40%</li>';
+            debtHtml += '<li>Short Term Debt Fund - 20%</li>';
+            debtHtml += '</ul></div>';
+            container.innerHTML += debtHtml;
+        }
+        
+        // Gold recommendations
+        if (allocation.gold > 0) {
+            let goldHtml = '<div class="recommendation-card">';
+            goldHtml += '<h4><i class="fas fa-coins"></i> Gold (₹' + formatNumber(allocation.goldAmount) + ')</h4>';
+            goldHtml += '<ul>';
+            goldHtml += '<li>Gold ETF - 70%</li>';
+            goldHtml += '<li>Gold Savings Fund - 30%</li>';
+            goldHtml += '</ul></div>';
+            container.innerHTML += goldHtml;
+        }
+        
+        // Cash recommendations
+        if (allocation.cash > 0) {
+            let cashHtml = '<div class="recommendation-card">';
+            cashHtml += '<h4><i class="fas fa-wallet"></i> Cash (₹' + formatNumber(allocation.cashAmount) + ')</h4>';
+            cashHtml += '<ul>';
+            cashHtml += '<li>High-yield Savings Account - 50%</li>';
+            cashHtml += '<li>Liquid Funds - 50%</li>';
+            cashHtml += '</ul></div>';
+            container.innerHTML += cashHtml;
+        }
+    }
+    
+    // Generate allocation notes
+    function generateNotes(allocation, formData) {
+        let notes = '';
+        
+        // Risk-based notes
+        switch(formData.riskTolerance) {
+            case 1:
+                notes += '<p>Your <strong>very conservative</strong> risk profile emphasizes capital preservation above growth. This allocation prioritizes stability with a significant portion in debt and gold.</p>';
+                break;
+            case 2:
+                notes += '<p>Your <strong>conservative</strong> risk profile balances modest growth with stability. This allocation maintains a significant position in debt while allowing some equity exposure.</p>';
+                break;
+            case 3:
+                notes += '<p>Your <strong>moderate</strong> risk profile provides a balanced approach. This allocation offers good diversification across equity, debt, and alternative assets.</p>';
+                break;
+            case 4:
+                notes += '<p>Your <strong>aggressive</strong> risk profile focuses on growth. This allocation emphasizes equities with moderate diversification into other asset classes to manage volatility.</p>';
+                break;
+            case 5:
+                notes += '<p>Your <strong>very aggressive</strong> risk profile maximizes growth potential. This allocation heavily favors equities and may experience significant short-term volatility.</p>';
+                break;
+        }
+        
+        // Time horizon notes
+        switch(formData.investmentHorizon) {
+            case '1-3':
+                notes += '<p>With a <strong>short-term</strong> investment horizon (1-3 years), your allocation maintains higher levels of debt and cash to protect against market volatility.</p>';
+                break;
+            case '3-7':
+                notes += '<p>With a <strong>medium-term</strong> investment horizon (3-7 years), your allocation provides a good balance between growth and stability.</p>';
+                break;
+            case '7-10':
+                notes += '<p>With a <strong>long-term</strong> investment horizon (7-10 years), your allocation emphasizes growth assets with reduced cash holdings.</p>';
+                break;
+            case '10+':
+                notes += '<p>With a <strong>very long-term</strong> investment horizon (10+ years), your allocation maximizes growth potential through higher equity exposure.</p>';
+                break;
+        }
+        
+        // Monthly contribution note
+        if (formData.monthlyContribution > 0) {
+            notes += `<p>Your monthly contribution of ₹${formatNumber(formData.monthlyContribution)} will significantly enhance your portfolio growth over time through the power of compounding.</p>`;
+        }
+        
+        // Advanced mode-specific notes
+        if (formData.mode === 'advanced') {
+            // Inflation notes
+            if (formData.inflationRate > 7) {
+                notes += '<p><strong>High inflation</strong> conditions have increased your allocation to equity and gold, which typically perform better in inflationary environments.</p>';
+            }
+            
+            // Tax bracket notes
+            if (formData.taxBracket >= 20) {
+                notes += '<p>Your <strong>higher tax bracket</strong> has influenced the allocation to favor more tax-efficient investment options.</p>';
+            }
+            
+            // Goal-specific notes
+            if (formData.goals?.includes('retirement')) {
+                notes += '<p>Your <strong>retirement goal</strong> has increased the equity allocation for long-term growth potential.</p>';
+            }
+            
+            if (formData.goals?.includes('income')) {
+                notes += '<p>Your <strong>regular income goal</strong> has increased the allocation to debt instruments which typically provide more stable income.</p>';
+            }
+            
+            if (formData.goals?.includes('tax-saving')) {
+                notes += '<p>Your <strong>tax-saving goal</strong> has influenced the allocation to include tax-efficient investment options.</p>';
+            }
+        }
+        
+        // Return projection note
+        notes += `<p>Based on historical average returns, this portfolio has a projected annual return of <strong>${allocation.expectedReturn.toFixed(1)}%</strong>, potentially growing to <strong>₹${formatNumber(allocation.projectedValue)}</strong> after ${allocation.years} years.</p>`;
+        
+        // General recommendation
+        notes += '<p>Remember that this allocation is a starting point and should be periodically reviewed. Markets change, and your financial circumstances may evolve over time.</p>';
+        
+        return notes;
+    }
+    
+    // Format numbers with commas
+    function formatNumber(number) {
+        return new Intl.NumberFormat('en-IN').format(Math.round(number));
+    }
+    
+    // Add CSS for recommendation cards
+    const style = document.createElement('style');
+    style.textContent = `
+        .recommendation-card {
+            background-color: var(--neutral-50, #f8fafc);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .recommendation-card h4 {
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .recommendation-card h4 i {
+            color: var(--primary-color, #3b82f6);
+        }
+        
+        .recommendation-card ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+        
+        .recommendation-card li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .recommendations-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            .recommendations-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+});

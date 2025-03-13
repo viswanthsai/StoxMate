@@ -1,5 +1,5 @@
 /**
- * Authentication UI utilities for Indivest
+ * Authentication UI utilities for StoxMate
  * Provides consistent handling of auth buttons across the application
  */
 
@@ -20,7 +20,7 @@ const AuthUtils = {
         this.findAndAttachButtonsByText();
         
         // Listen for auth state changes
-        document.addEventListener('indivest:authupdated', (event) => {
+        document.addEventListener('stoxmate:authupdated', (event) => {
             setTimeout(() => {
                 this.checkAndSetAuthState();
                 this.initAuthButtons();
@@ -37,7 +37,7 @@ const AuthUtils = {
         if (!authButtons) return;
         
         // Check if we have a stored user session AND we're not on the profile page
-        const storedUser = localStorage.getItem('indivest_user');
+        const storedUser = localStorage.getItem('stoxmate_user');
         const isProfilePage = window.location.pathname.includes('profile.html');
         
         if (storedUser && this.isValidUserSession(storedUser)) {
@@ -60,7 +60,7 @@ const AuthUtils = {
             } catch (e) {
                 console.error('Error parsing stored user:', e);
                 // Clear invalid session data and show login/register UI
-                localStorage.removeItem('indivest_user');
+                localStorage.removeItem('stoxmate_user');
                 this.showLoggedOutUI(authButtons, profileLink);
             }
         } else {
@@ -141,7 +141,7 @@ const AuthUtils = {
         if (!authButtons) return;
         
         // Check if we have a stored user session
-        const storedUser = localStorage.getItem('indivest_user');
+        const storedUser = localStorage.getItem('stoxmate_user');
         if (storedUser) {
             try {
                 const user = JSON.parse(storedUser);
@@ -161,7 +161,7 @@ const AuthUtils = {
                 this.attachEventToButton('logout-btn', this.handleLogout);
             } catch (e) {
                 console.error('Error parsing stored user:', e);
-                localStorage.removeItem('indivest_user');
+                localStorage.removeItem('stoxmate_user');
             }
         }
     },
@@ -170,9 +170,9 @@ const AuthUtils = {
      * Handle logout action
      */
     handleLogout: async function() {
-        if (window.indivest && window.indivest.supabase) {
+        if (window.stoxmate && window.stoxmate.supabase) {
             try {
-                const { error } = await window.indivest.supabase.auth.signOut();
+                const { error } = await window.stoxmate.supabase.auth.signOut();
                 if (error) throw error;
             } catch (err) {
                 console.error('Error signing out:', err);
@@ -180,7 +180,7 @@ const AuthUtils = {
         }
         
         // Clear local storage
-        localStorage.removeItem('indivest_user');
+        localStorage.removeItem('stoxmate_user');
         
         // Redirect to home
         window.location.href = 'index.html';
@@ -204,5 +204,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Export for use in other scripts
-window.indivest = window.indivest || {};
-window.indivest.AuthUtils = AuthUtils;
+window.stoxmate = window.stoxmate || {};
+window.stoxmate.AuthUtils = AuthUtils;

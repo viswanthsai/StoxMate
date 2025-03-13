@@ -74,3 +74,8 @@
     color: var(--neutral-600);
     font-size: 1rem;
 }
+
+/* Update loading message text in CSS */
+.loading-message::after {
+    content: 'Loading StoxMate...';
+}

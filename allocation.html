@@ -3,17 +3,444 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fund Allocation - Indivest</title>
+    <title>Asset Allocation - StoxMate</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="allocation.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Improved layout and alignment */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .allocation-hero {
+            padding: 8rem 0 4rem;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
+            text-align: center;
+        }
+        
+        .allocation-form {
+            padding: 4rem 0;
+            background-color: var(--neutral-50, #f8fafc);
+        }
+        
+        .allocation-form-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+        
+        .allocation-form-container h2 {
+            text-align: center;
+            margin-bottom: 0.5rem;
+            color: var(--neutral-900, #0f172a);
+        }
+        
+        .allocation-form-container > p {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--neutral-600, #475569);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            flex: 1;
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--neutral-700, #334155);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--neutral-300, #cbd5e1);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color, #3b82f6);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .allocation-results {
+            padding: 4rem 0;
+            background-color: var(--neutral-100, #f1f5f9);
+        }
+        
+        .results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .chart-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            height: 100%;
+        }
+        
+        .chart-card h3 {
+            margin-bottom: 1.5rem;
+            color: var(--neutral-800, #1e293b);
+        }
+        
+        .results-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .allocation-notes {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .advanced-options-toggle {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: var(--primary-color, #3b82f6);
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .advanced-options-toggle i {
+            margin-right: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .advanced-options {
+            display: none;
+            background-color: var(--neutral-50, #f8fafc);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--neutral-200, #e2e8f0);
+        }
+        
+        .advanced-options.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .btn-lg {
+            padding: 0.75rem 2rem;
+            font-size: 1.1rem;
+        }
+        
+        /* Risk slider improvements */
+        .risk-slider-container {
+            margin-top: 0.75rem;
+        }
+        
+        .risk-slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(to right, #10b981, #f59e0b, #ef4444);
+            border-radius: 4px;
+            outline: none;
+            margin-bottom: 1rem;
+        }
+        
+        .risk-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--primary-color, #3b82f6);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+        
+        .risk-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--neutral-500, #64748b);
+        }
+        
+        .risk-value {
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary-color, #3b82f6);
+            margin-top: 0.5rem;
+        }
+        
+        .risk-description {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--neutral-600, #475569);
+            margin-top: 0.25rem;
+        }
+        
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .allocation-form-container {
+                padding: 1.5rem;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .results-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-actions {
+                flex-direction: column;
+            }
+            
+            .results-actions .btn {
+                width: 100%;
+            }
+        }
+        
+        .calculation-toggle {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+        
+        .calc-option {
+            padding: 8px 16px;
+            cursor: pointer;
+            margin-right: 8px;
+            border-radius: 4px 4px 0 0;
+            transition: all 0.2s;
+        }
+        
+        .calc-option.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        /* Advanced options */
+        #advanced-options {
+            display: none;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        /* Update chart colors for the three asset classes */
+        .chart-legend .stocks {
+            background-color: #3b82f6;
+        }
+        
+        .chart-legend .gold {
+            background-color: #f59e0b;
+        }
+        
+        .chart-legend .fd {
+            background-color: #10b981;
+        }
+        
+        /* Center align hero section content */
+        .allocation-hero {
+            text-align: center;
+            padding: 8rem 0 4rem;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero-content h1 {
+            margin-bottom: 1rem;
+        }
+        
+        .hero-content p {
+            font-size: 1.2rem;
+            color: var(--neutral-700);
+        }
+
+        /* Recommended Investment Options section */
+        .recommended-investments {
+            margin-top: 2rem;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .recommended-investments h2 {
+            margin-bottom: 0.5rem;
+            color: var(--neutral-900);
+        }
+        
+        .recommended-investments p {
+            margin-bottom: 1.5rem;
+            color: var(--neutral-600);
+        }
+        
+        .investments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .investment-card {
+            border: 1px solid var(--neutral-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        .investment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            border-color: var(--primary-color);
+        }
+        
+        .investment-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .investment-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            color: white;
+        }
+        
+        .investment-icon.stocks {
+            background-color: #3b82f6;
+        }
+        
+        .investment-icon.gold {
+            background-color: #f59e0b;
+        }
+        
+        .investment-icon.fd {
+            background-color: #10b981;
+        }
+        
+        .investment-name h3 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        
+        .investment-name p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--neutral-500);
+        }
+        
+        .investment-details {
+            margin-top: 1rem;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .detail-label {
+            color: var(--neutral-600);
+            font-size: 0.9rem;
+        }
+        
+        .detail-value {
+            font-weight: 500;
+        }
+        
+        .detail-value.positive {
+            color: var(--success-color);
+        }
+        
+        .detail-value.negative {
+            color: var(--danger-color);
+        }
+        
+        .investment-buttons {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .investment-buttons .btn {
+            width: 100%;
+        }
+        
+        .match-label {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .investments-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation Bar -->
     <nav>
         <div class="logo">
-            <span class="logo-text">Indi<span class="logo-accent">vest</span></span>
+            <span class="logo-text">Stox<span class="logo-accent">Mate</span></span>
         </div>
         <div class="nav-links">
             <a href="index.html">Home</a>
@@ -33,114 +460,163 @@
         </div>
     </nav>
 
-    <!-- Dashboard Header -->
-    <section class="dashboard-header">
+    <!-- Hero Section -->
+    <section class="allocation-hero">
         <div class="container">
-            <h1>Smart Fund Allocation</h1>
-            <p>Optimize your investments based on current market conditions</p>
-            <div class="market-status">
-                <div class="status-group">
-                    <div class="status-indicator">
-                        <span class="status-label">Market Mood:</span>
-                        <span id="market-mood" class="status-value neutral">Neutral</span>
-                    </div>
-                    <div class="pe-indicator">
-                        <span class="pe-label">NIFTY 50 PE Ratio:</span>
-                        <span id="current-pe" class="pe-value">20.0</span>
-                    </div>
-                </div>
-                <div class="last-updated">
-                    <i class="fas fa-sync-alt"></i> Last updated: <span id="update-time">Just now</span>
-                </div>
+            <div class="hero-content">
+                <h1>StoxMate <span class="highlight">Asset Allocation</span> Tool</h1>
+                <p>Optimize your investment portfolio with our personalized allocation recommendations</p>
             </div>
         </div>
     </section>
 
-    <!-- Allocation Calculator -->
-    <section class="allocation-calculator">
+    <!-- Allocation Form Section -->
+    <section class="allocation-form">
         <div class="container">
-            <div class="section-header calculator-header">
-                <h2>Investment Allocation Calculator</h2>
-                <p>Enter your details below to get personalized investment recommendations</p>
-            </div>
-            
-            <div class="calculator-wrapper">
-                <div class="calculator-form">
-                    <div class="form-header">
-                        <h3>Investment Details</h3>
-                    </div>
-                    <div class="amount-input">
-                        <label for="investment-amount">Investment Amount</label>
-                        <div class="input-wrapper">
-                            <span class="currency">₹</span>
-                            <input type="number" id="investment-amount" placeholder="50000" min="1000">
-                        </div>
-                    </div>
-                    <div class="risk-profile">
-                        <h3>Risk Preference</h3>
-                        <div class="risk-options">
-                            <label class="risk-option">
-                                <input type="radio" name="risk" value="conservative" checked>
-                                <span class="risk-label">Conservative</span>
-                            </label>
-                            <label class="risk-option">
-                                <input type="radio" name="risk" value="moderate">
-                                <span class="risk-label">Moderate</span>
-                            </label>
-                            <label class="risk-option">
-                                <input type="radio" name="risk" value="aggressive">
-                                <span class="risk-label">Aggressive</span>
-                            </label>
-                        </div>
-                    </div>
-                    <button id="calculate-btn" class="btn btn-primary btn-large">Calculate Allocation</button>
+            <div class="allocation-form-container">
+                <h2>Create Your Investment Plan</h2>
+                <p>Fill in the details below to get a personalized asset allocation recommendation</p>
+                
+                <!-- Calculation Mode Toggle -->
+                <div class="calculation-toggle">
+                    <div class="calc-option active" id="simple-calc">Simple Calculation</div>
+                    <div class="calc-option" id="advanced-calc">Advanced Calculation</div>
                 </div>
                 
-                <div class="allocation-results">
-                    <div class="results-header">
-                        <h3>Recommended Allocation</h3>
-                        <p>Based on current NIFTY 50 PE: <span id="results-pe">20.0</span></p>
-                    </div>
-                    <div class="allocation-chart-container">
-                        <div class="doughnut-chart-placeholder" id="allocation-chart">
-                            <!-- Chart will be generated here -->
-                            <div class="chart-loading">
-                                <i class="fas fa-chart-pie"></i>
-                            </div>
+                <form id="allocation-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="investment-amount">Investment Amount (₹)</label>
+                            <input type="number" id="investment-amount" class="form-control" min="1000" step="1000" value="100000" required>
                         </div>
                     </div>
-                    <div class="allocation-details">
-                        <div class="allocation-item stocks">
-                            <div class="allocation-info">
-                                <i class="fas fa-chart-line"></i>
-                                <span class="allocation-name">Stocks</span>
+                    
+                    <!-- Risk tolerance slider -->
+                    <div class="form-group">
+                        <label>Risk Tolerance</label>
+                        <div class="risk-slider-container">
+                            <input type="range" id="risk-tolerance" class="risk-slider" min="1" max="5" value="3">
+                            <div class="risk-labels">
+                                <div>Conservative</div>
+                                <div>Moderate</div>
+                                <div>Aggressive</div>
                             </div>
-                            <div class="allocation-values">
-                                <span id="stocks-percentage" class="percentage">40%</span>
-                                <span id="stocks-amount" class="amount">₹20,000</span>
-                            </div>
-                        </div>
-                        <div class="allocation-item gold">
-                            <div class="allocation-info">
-                                <i class="fas fa-coins"></i>
-                                <span class="allocation-name">Gold</span>
-                            </div>
-                            <div class="allocation-values">
-                                <span id="gold-percentage" class="percentage">30%</span>
-                                <span id="gold-amount" class="amount">₹15,000</span>
-                            </div>
-                        </div>
-                        <div class="allocation-item fd">
-                            <div class="allocation-info">
-                                <i class="fas fa-landmark"></i>
-                                <span class="allocation-name">Fixed Deposits</span>
-                            </div>
-                            <div class="allocation-values">
-                                <span id="fd-percentage" class="percentage">30%</span>
-                                <span id="fd-amount" class="amount">₹15,000</span>
-                            </div>
+                            <div class="risk-value">Moderate</div>
                         </div>
                     </div>
+                    
+                    <div class="form-group">
+                        <label for="monthly-contribution">Monthly Contribution (₹)</label>
+                        <input type="number" id="monthly-contribution" class="form-control" min="0" step="1000" value="10000">
+                    </div>
+                    
+                    <!-- Advanced options (hidden by default) -->
+                    <div id="advanced-options">
+                        <div class="form-group">
+                            <label for="current-investments">Current Investments (₹)</label>
+                            <input type="number" id="current-investments" class="form-control" min="0" step="1000" value="0">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="inflation-rate">Expected Inflation Rate (%)</label>
+                                <input type="number" id="inflation-rate" class="form-control" min="0" max="20" step="0.1" value="6.0">
+                            </div>
+                            <div class="form-group">
+                                <label for="tax-bracket">Tax Bracket (%)</label>
+                                <select id="tax-bracket" class="form-control">
+                                    <option value="0">No Income Tax (0%)</option>
+                                    <option value="5">5% (Up to ₹5 lakhs)</option>
+                                    <option value="10">10% (₹5-7.5 lakhs)</option>
+                                    <option value="15">15% (₹7.5-10 lakhs)</option>
+                                    <option value="20" selected>20% (₹10-12.5 lakhs)</option>
+                                    <option value="25">25% (₹12.5-15 lakhs)</option>
+                                    <option value="30">30% (Above ₹15 lakhs)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="investment-horizon">Investment Horizon</label>
+                            <select id="investment-horizon" class="form-control">
+                                <option value="1-3">1-3 years (Short Term)</option>
+                                <option value="3-7" selected>3-7 years (Medium Term)</option>
+                                <option value="7-10">7-10 years (Long Term)</option>
+                                <option value="10+">10+ years (Very Long Term)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg">Generate Allocation</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Allocation Results Section (initially hidden) -->
+    <section class="allocation-results" id="allocation-results" style="display: none;">
+        <div class="container">
+            <h2>Your Recommended Allocation</h2>
+            <p>Based on your investment profile, we recommend the following asset allocation</p>
+            
+            <div class="results-container">
+                <div class="chart-card">
+                    <h3>Asset Allocation</h3>
+                    <div class="chart-container">
+                        <canvas id="allocation-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <h3>Investment Breakdown</h3>
+                    <div class="allocation-table-container">
+                        <table class="allocation-table">
+                            <thead>
+                                <tr>
+                                    <th>Asset Class</th>
+                                    <th>Allocation</th>
+                                    <th>Amount (₹)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allocation-table-body">
+                                <!-- Table rows will be dynamically generated -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td><strong>Total</strong></td>
+                                    <td><strong>100%</strong></td>
+                                    <td id="allocation-total"><strong>₹100,000</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- New Section: Recommended Investment Options -->
+            <div class="recommended-investments">
+                <h2>Recommended Investment Options</h2>
+                <p>Based on your profile and current market conditions</p>
+                
+                <div class="investments-grid" id="recommended-investments">
+                    <!-- Dynamically populated by JavaScript -->
+                </div>
+                
+                <div class="disclaimer">
+                    <p><small><strong>Note:</strong> These recommendations are for informational purposes only and do not constitute investment advice. Please conduct your own research or consult a financial advisor before investing.</small></p>
+                </div>
+            </div>
+            
+            <div class="results-actions">
+                <button class="btn btn-outline" id="edit-allocation-btn">Modify Allocation</button>
+                <button class="btn btn-primary" id="save-allocation-btn">Save This Plan</button>
+                <button class="btn btn-accent" id="download-pdf-btn">Download PDF</button>
+            </div>
+            
+            <div class="allocation-notes">
+                <h3>Notes & Recommendations</h3>
+                <div class="notes-content" id="allocation-notes">
+                    <!-- Notes will be dynamically generated -->
                 </div>
             </div>
         </div>
@@ -542,7 +1018,7 @@
     <footer>
         <div class="footer-content">
             <div class="footer-logo">
-                <span class="logo-text">Indi<span class="logo-accent">vest</span></span>
+                <span class="logo-text">Stox<span class="logo-accent">Mate</span></span>
                 <p>AI-powered investment solutions</p>
             </div>
             
@@ -578,7 +1054,7 @@
         </div>
         
         <div class="footer-bottom">
-            <p>&copy; 2023 Indivest. All rights reserved.</p>
+            <p>&copy; 2023 StoxMate. All rights reserved.</p>
             <div class="social-icons">
                 <a href="#"><i class="fab fa-twitter"></i></a>
                 <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -588,7 +1064,545 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/auth-utils.js"></script>
     <script src="allocation.js"></script>
+    <script src="js/rename-migration.js"></script>
+    <script src="js/branding-update.js"></script>
+    <script>
+        // Advanced options toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const advancedToggle = document.getElementById('advanced-toggle');
+            const advancedOptions = document.getElementById('advanced-options');
+            
+            if (advancedToggle && advancedOptions) {
+                advancedToggle.addEventListener('click', function() {
+                    const isActive = advancedOptions.classList.contains('active');
+                    
+                    // Toggle active class
+                    if (isActive) {
+                        advancedOptions.classList.remove('active');
+                        advancedToggle.querySelector('i').style.transform = 'rotate(0)';
+                    } else {
+                        advancedOptions.classList.add('active');
+                        advancedToggle.querySelector('i').style.transform = 'rotate(90deg)';
+                    }
+                });
+            }
+            
+            // Initialize risk slider description
+            const riskSlider = document.getElementById('risk-tolerance');
+            const riskDescription = document.getElementById('risk-description');
+            
+            if (riskSlider && riskDescription) {
+                riskSlider.addEventListener('input', updateRiskDescription);
+                updateRiskDescription(); // Initialize with current value
+            }
+            
+            function updateRiskDescription() {
+                const value = riskSlider.value;
+                switch (parseInt(value)) {
+                    case 1:
+                        riskDescription.textContent = "Prioritizes capital preservation with minimal risk. Expect lower returns with minimal fluctuations.";
+                        break;
+                    case 2:
+                        riskDescription.textContent = "Focuses on stability with some growth potential. Small market fluctuations may occur.";
+                        break;
+                    case 3:
+                        riskDescription.textContent = "Balanced approach with moderate market fluctuations. Aims for medium-term growth.";
+                        break;
+                    case 4:
+                        riskDescription.textContent = "Growth-oriented strategy with higher volatility. Suitable for longer investment horizons.";
+                        break;
+                    case 5:
+                        riskDescription.textContent = "Maximum growth potential with significant market fluctuations. For long-term investors comfortable with volatility.";
+                        break;
+                }
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Global chart reference to properly destroy/recreate
+            let allocationChart = null;
+            
+            // Calculation mode toggle
+            const simpleCalcBtn = document.getElementById('simple-calc');
+            const advancedCalcBtn = document.getElementById('advanced-calc');
+            const advancedOptions = document.getElementById('advanced-options');
+            
+            let calculationMode = 'simple';
+            
+            simpleCalcBtn.addEventListener('click', function() {
+                simpleCalcBtn.classList.add('active');
+                advancedCalcBtn.classList.remove('active');
+                advancedOptions.style.display = 'none';
+                calculationMode = 'simple';
+            });
+            
+            advancedCalcBtn.addEventListener('click', function() {
+                advancedCalcBtn.classList.add('active');
+                simpleCalcBtn.classList.remove('active');
+                advancedOptions.style.display = 'block';
+                calculationMode = 'advanced';
+            });
+            
+            // Risk slider interaction
+            const riskSlider = document.getElementById('risk-tolerance');
+            const riskValue = document.querySelector('.risk-value');
+            
+            riskSlider.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                switch(value) {
+                    case 1:
+                        riskValue.textContent = 'Very Conservative';
+                        break;
+                    case 2:
+                        riskValue.textContent = 'Conservative';
+                        break;
+                    case 3:
+                        riskValue.textContent = 'Moderate';
+                        break;
+                    case 4:
+                        riskValue.textContent = 'Aggressive';
+                        break;
+                    case 5:
+                        riskValue.textContent = 'Very Aggressive';
+                        break;
+                }
+            });
+            
+            // Form submission
+            const allocationForm = document.getElementById('allocation-form');
+            const resultsSection = document.getElementById('allocation-results');
+            
+            allocationForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Collect form data
+                const formData = {
+                    investmentAmount: parseFloat(document.getElementById('investment-amount').value),
+                    riskTolerance: parseInt(document.getElementById('risk-tolerance').value),
+                    monthlyContribution: parseFloat(document.getElementById('monthly-contribution').value),
+                    mode: calculationMode,
+                    // Default investment horizon for simple mode
+                    investmentHorizon: '3-7'
+                };
+                
+                // Add advanced data if in advanced mode
+                if(calculationMode === 'advanced') {
+                    formData.currentInvestments = parseFloat(document.getElementById('current-investments').value) || 0;
+                    formData.inflationRate = parseFloat(document.getElementById('inflation-rate').value) || 6.0;
+                    formData.taxBracket = parseInt(document.getElementById('tax-bracket').value) || 0;
+                    formData.investmentHorizon = document.getElementById('investment-horizon').value;
+                }
+                
+                // Calculate allocation
+                const allocation = calculateAllocation(formData);
+                
+                // Display results
+                displayResults(allocation, formData);
+                
+                // Show results section
+                resultsSection.style.display = 'block';
+                
+                // Scroll to results
+                resultsSection.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Calculate allocation based on inputs
+            function calculateAllocation(formData) {
+                // Base allocations by risk level (1-5) for stocks, gold, FD
+                const baseAllocations = [
+                    { stocks: 20, gold: 20, fd: 60 },  // Very Conservative (1)
+                    { stocks: 35, gold: 15, fd: 50 },  // Conservative (2)
+                    { stocks: 50, gold: 15, fd: 35 },  // Moderate (3)
+                    { stocks: 70, gold: 10, fd: 20 },  // Aggressive (4)
+                    { stocks: 80, gold: 10, fd: 10 }   // Very Aggressive (5)
+                ];
+                
+                // Get base allocation by risk level
+                let allocation = { ...baseAllocations[formData.riskTolerance - 1] };
+                
+                // Adjust based on time horizon (only in advanced mode)
+                if (formData.mode === 'advanced') {
+                    if (formData.investmentHorizon === '1-3') {
+                        // Short term: Less stocks, more FD
+                        allocation.stocks = Math.max(allocation.stocks - 15, 10);
+                        allocation.fd += 15;
+                    } else if (formData.investmentHorizon === '7-10') {
+                        // Long term: More stocks, less FD
+                        allocation.stocks = Math.min(allocation.stocks + 10, 90);
+                        allocation.fd = Math.max(allocation.fd - 10, 5);
+                    } else if (formData.investmentHorizon === '10+') {
+                        // Very long term: Maximum stocks
+                        allocation.stocks = Math.min(allocation.stocks + 15, 90);
+                        allocation.fd = Math.max(allocation.fd - 15, 5);
+                    }
+                    
+                    // Apply additional factors in advanced mode
+                    // Adjust for inflation if high
+                    if (formData.inflationRate > 7) {
+                        allocation.stocks = Math.min(allocation.stocks + 5, 90);
+                        allocation.gold = Math.min(allocation.gold + 5, 30);
+                        allocation.fd = Math.max(allocation.fd - 10, 5);
+                    }
+                }
+                
+                // Normalize to ensure it adds up to 100%
+                let total = allocation.stocks + allocation.gold + allocation.fd;
+                if (total !== 100) {
+                    allocation.stocks = Math.round(allocation.stocks * 100 / total);
+                    allocation.gold = Math.round(allocation.gold * 100 / total);
+                    allocation.fd = 100 - allocation.stocks - allocation.gold;
+                }
+                
+                // Calculate amounts
+                const amount = formData.investmentAmount;
+                allocation.stocksAmount = Math.round(amount * allocation.stocks / 100);
+                allocation.goldAmount = Math.round(amount * allocation.gold / 100);
+                allocation.fdAmount = amount - allocation.stocksAmount - allocation.goldAmount;
+                
+                // Calculate expected returns based on asset class
+                const expectedReturns = {
+                    stocks: 12,  // 12% for stocks
+                    gold: 8,     // 8% for gold
+                    fd: 6        // 6% for FDs
+                };
+                
+                // Calculate weighted average expected return
+                allocation.expectedReturn = (
+                    (allocation.stocks * expectedReturns.stocks) +
+                    (allocation.gold * expectedReturns.gold) +
+                    (allocation.fd * expectedReturns.fd)
+                ) / 100;
+                
+                return allocation;
+            }
+            
+            // Display results
+            function displayResults(allocation, formData) {
+                // Create pie chart
+                const ctx = document.getElementById('allocation-chart').getContext('2d');
+                
+                // Destroy existing chart if it exists
+                if (allocationChart) {
+                    allocationChart.destroy();
+                }
+                
+                allocationChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Stocks', 'Gold', 'Fixed Deposits'],
+                        datasets: [{
+                            data: [allocation.stocks, allocation.gold, allocation.fd],
+                            backgroundColor: ['#3b82f6', '#f59e0b', '#10b981']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+                
+                // Update table
+                const tableBody = document.getElementById('allocation-table-body');
+                tableBody.innerHTML = `
+                    <tr>
+                        <td>Stocks</td>
+                        <td>${allocation.stocks}%</td>
+                        <td>₹${formatNumber(allocation.stocksAmount)}</td>
+                    </tr>
+                    <tr>
+                        <td>Gold</td>
+                        <td>${allocation.gold}%</td>
+                        <td>₹${formatNumber(allocation.goldAmount)}</td>
+                    </tr>
+                    <tr>
+                        <td>Fixed Deposits</td>
+                        <td>${allocation.fd}%</td>
+                        <td>₹${formatNumber(allocation.fdAmount)}</td>
+                    </tr>
+                `;
+                
+                // Generate notes
+                let notes = '';
+                
+                switch(formData.riskTolerance) {
+                    case 1:
+                        notes += '<p>Your <strong>very conservative</strong> risk profile prioritizes capital preservation over growth. We\'ve allocated a significant portion to fixed deposits for stability.</p>';
+                        break;
+                    case 2:
+                        notes += '<p>Your <strong>conservative</strong> risk profile balances safety with modest growth potential. Fixed deposits form a solid foundation while stocks provide some growth opportunity.</p>';
+                        break;
+                    case 3:
+                        notes += '<p>Your <strong>moderate</strong> risk profile provides a balanced approach between growth and stability with an equal split between stocks and safer assets.</p>';
+                        break;
+                    case 4:
+                        notes += '<p>Your <strong>aggressive</strong> risk profile focuses on growth potential with higher stock allocation. This approach can handle higher volatility for long-term returns.</p>';
+                        break;
+                    case 5:
+                        notes += '<p>Your <strong>very aggressive</strong> risk profile maximizes growth potential with a high allocation to stocks. This approach aims for maximum returns over time.</p>';
+                        break;
+                }
+                
+                // Add advanced mode-specific notes
+                if (formData.mode === 'advanced') {
+                    if (formData.inflationRate > 7) {
+                        notes += '<p>Due to high expected inflation, we\'ve adjusted your allocation to include more stocks and gold which tend to perform better in inflationary environments.</p>';
+                    }
+                    
+                    // Add time horizon note
+                    switch(formData.investmentHorizon) {
+                        case '1-3':
+                            notes += '<p>With your <strong>short-term</strong> investment horizon, we\'ve allocated more to fixed deposits to preserve capital in the near term.</p>';
+                            break;
+                        case '3-7':
+                            notes += '<p>Your <strong>medium-term</strong> investment horizon allows for a balanced allocation approach with moderate exposure to stocks for growth.</p>';
+                            break;
+                        case '7-10':
+                            notes += '<p>With your <strong>long-term</strong> investment horizon, we\'ve included more stocks to maximize growth potential over time.</p>';
+                            break;
+                        case '10+':
+                            notes += '<p>Your <strong>very long-term</strong> investment horizon allows for significant exposure to stocks for maximum growth potential.</p>';
+                            break;
+                    }
+                }
+                
+                // Add expected return note
+                notes += `<p>With this allocation, your expected annual return is approximately <strong>${allocation.expectedReturn.toFixed(1)}%</strong> based on historical performance of each asset class.</p>`;
+                
+                document.getElementById('allocation-notes').innerHTML = notes;
+
+                // Generate recommended investments
+                generateRecommendations(allocation, formData);
+            }
+            
+            // Format numbers with commas
+            function formatNumber(num) {
+                return new Intl.NumberFormat('en-IN').format(num);
+            }
+            
+            // Handle edit allocation button
+            document.getElementById('edit-allocation-btn').addEventListener('click', function() {
+                resultsSection.style.display = 'none';
+                document.querySelector('.allocation-form').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+
+            // Generate recommended investments based on allocation and risk profile
+            function generateRecommendations(allocation, formData) {
+                const recommendationsContainer = document.getElementById('recommended-investments');
+                recommendationsContainer.innerHTML = ''; // Clear existing recommendations
+                
+                // Stocks recommendations
+                if (allocation.stocks > 0) {
+                    // Determine which stock options to show based on risk level
+                    let stockOptions = [];
+                    
+                    if (formData.riskTolerance <= 2) {
+                        // Conservative options
+                        stockOptions = [
+                            {
+                                name: "Nifty 50 Index Fund",
+                                type: "Large Cap Index",
+                                returns: "12.8",
+                                expense: "0.1",
+                                risk: "Moderate",
+                                match: "High",
+                                minInvestment: "500"
+                            },
+                            {
+                                name: "Blue Chip Fund",
+                                type: "Large Cap Equity",
+                                returns: "11.5",
+                                expense: "0.9",
+                                risk: "Moderate",
+                                match: "High",
+                                minInvestment: "1,000"
+                            }
+                        ];
+                    } else if (formData.riskTolerance === 3) {
+                        // Moderate options
+                        stockOptions = [
+                            {
+                                name: "Multicap Fund",
+                                type: "Diversified Equity",
+                                returns: "14.2",
+                                expense: "1.2",
+                                risk: "Moderate-High",
+                                match: "High",
+                                minInvestment: "1,000"
+                            },
+                            {
+                                name: "NIFTY Next 50 Index Fund",
+                                type: "Mid-Large Cap Index",
+                                returns: "15.6",
+                                expense: "0.3",
+                                risk: "Moderate-High",
+                                match: "High",
+                                minInvestment: "500"
+                            }
+                        ];
+                    } else {
+                        // Aggressive options
+                        stockOptions = [
+                            {
+                                name: "Small Cap Fund",
+                                type: "Small Cap Equity",
+                                returns: "18.4",
+                                expense: "1.8",
+                                risk: "High",
+                                match: "High",
+                                minInvestment: "1,000"
+                            },
+                            {
+                                name: "Sectoral Technology Fund",
+                                type: "Sector Fund",
+                                returns: "22.1",
+                                expense: "1.5",
+                                risk: "Very High",
+                                match: "High",
+                                minInvestment: "5,000"
+                            }
+                        ];
+                    }
+                    
+                    // Add stock options to the container
+                    stockOptions.forEach(option => {
+                        recommendationsContainer.appendChild(
+                            createInvestmentCard("stocks", option)
+                        );
+                    });
+                }
+                
+                // Gold recommendations
+                if (allocation.gold > 0) {
+                    const goldOptions = [
+                        {
+                            name: "Gold ETF",
+                            type: "Exchange Traded Fund",
+                            returns: "8.9",
+                            expense: "0.5",
+                            risk: "Moderate",
+                            match: "High",
+                            minInvestment: "1 unit"
+                        },
+                        {
+                            name: "Gold Savings Fund",
+                            type: "Fund of Fund",
+                            returns: "8.2",
+                            expense: "0.8",
+                            risk: "Moderate",
+                            match: "High",
+                            minInvestment: "100"
+                        }
+                    ];
+                    
+                    goldOptions.forEach(option => {
+                        recommendationsContainer.appendChild(
+                            createInvestmentCard("gold", option)
+                        );
+                    });
+                }
+                
+                // FD recommendations
+                if (allocation.fd > 0) {
+                    const fdOptions = [
+                        {
+                            name: "Bank Fixed Deposit",
+                            type: "Term Deposit",
+                            returns: "6.8",
+                            expense: "0",
+                            risk: "Low",
+                            match: "High",
+                            minInvestment: "10,000"
+                        },
+                        {
+                            name: "Corporate Fixed Deposit",
+                            type: "Term Deposit",
+                            returns: "7.9",
+                            expense: "0",
+                            risk: "Low-Moderate",
+                            match: "Medium",
+                            minInvestment: "25,000"
+                        }
+                    ];
+                    
+                    fdOptions.forEach(option => {
+                        recommendationsContainer.appendChild(
+                            createInvestmentCard("fd", option)
+                        );
+                    });
+                }
+            }
+            
+            // Create an investment card element
+            function createInvestmentCard(type, option) {
+                const card = document.createElement('div');
+                card.className = 'investment-card';
+                
+                let iconClass, iconContent;
+                
+                switch(type) {
+                    case 'stocks':
+                        iconClass = 'stocks';
+                        iconContent = '<i class="fas fa-chart-line"></i>';
+                        break;
+                    case 'gold':
+                        iconClass = 'gold';
+                        iconContent = '<i class="fas fa-coins"></i>';
+                        break;
+                    case 'fd':
+                        iconClass = 'fd';
+                        iconContent = '<i class="fas fa-landmark"></i>';
+                        break;
+                    default:
+                        iconClass = 'stocks';
+                        iconContent = '<i class="fas fa-chart-line"></i>';
+                }
+                
+                card.innerHTML = `
+                    <div class="investment-header">
+                        <div class="investment-icon ${iconClass}">${iconContent}</div>
+                        <div class="investment-name">
+                            <h3>${option.name}</h3>
+                            <p>${option.type}</p>
+                        </div>
+                    </div>
+                    <div class="investment-details">
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Return</div>
+                            <div class="detail-value positive">+${option.returns}%</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expense Ratio</div>
+                            <div class="detail-value">${option.expense}%</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Risk Level</div>
+                            <div class="detail-value">${option.risk}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Min. Investment</div>
+                            <div class="detail-value">₹${option.minInvestment}</div>
+                        </div>
+                        <div class="match-label">
+                            ${option.match} Match for Your Profile
+                        </div>
+                    </div>
+                    <div class="investment-buttons">
+                        <button class="btn btn-primary">Invest Now</button>
+                        <button class="btn btn-outline">Learn More</button>
+                    </div>
+                `;
+                
+                return card;
+            }
+        });
+    </script>
 </body>
 </html>
