@@ -42,13 +42,13 @@
             display: grid;
             grid-template-columns: 1fr 350px;
             gap: 2rem;
-            max-width: 1200px;
+            max-width: 1400px; /* Increased from 1200px for wider content */
             margin: 0 auto;
             padding: 0 1rem;
         }
         
         .full-chat {
-            height: 600px;
+            height: 800px; /* Increased from 600px for taller chat */
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             border-radius: 12px;
             overflow: hidden;
@@ -56,15 +56,18 @@
         }
         
         .full-chat .chat-messages {
-            height: 480px;
+            height: 680px; /* Increased from 480px to match new container height */
             overflow-y: auto;
             padding: 1.5rem;
+            font-size: 1.05rem; /* Slightly larger font for better readability */
         }
         
         .full-chat .message {
             margin-bottom: 1.5rem;
-            max-width: 80%;
+            margin-bottom: 1.8rem; /* More spacing between messages */
+            max-width: 85%; /* Wider messages */
             position: relative;
+            line-height: 1.5; /* Improved readability */
         }
         
         .full-chat .message.user {
@@ -72,15 +75,13 @@
             background-color: #3b82f6;
             color: white;
             border-radius: 18px 18px 0 18px;
-            padding: 0.8rem 1.2rem;
+            padding: 1rem 1.4rem; /* More padding */
+            font-size: 1.1rem; /* Larger font */
         }
         
         .full-chat .message.bot {
             margin-right: auto;
             background-color: #f1f5f9;
-            color: #1e293b;
-            border-radius: 18px 18px 18px 0;
-            padding: 0.8rem 1.2rem;
         }
         
         .chat-sidebar {
@@ -165,9 +166,23 @@
         }
         
         /* Responsive styles */
+        @media (max-width: 1440px) {
+            .advisor-container {
+                max-width: 1200px;
+            }
+        }
+        
         @media (max-width: 992px) {
             .advisor-container {
                 grid-template-columns: 1fr;
+            }
+            
+            .full-chat {
+                height: 700px; /* Adjusted for medium screens */
+            }
+            
+            .full-chat .chat-messages {
+                height: 580px;
             }
             
             .full-chat .message {
@@ -181,11 +196,11 @@
             }
             
             .full-chat {
-                height: 500px;
+                height: 600px; /* Adjusted for small screens */
             }
             
             .full-chat .chat-messages {
-                height: 380px;
+                height: 480px;
             }
             
             .full-chat .message {
@@ -349,8 +364,41 @@
 
     <!-- Include scripts -->
     <script src="config.js"></script>
+    <script>
+        // Ensure STOXMATE_CONFIG is properly initialized
+        window.STOXMATE_CONFIG = window.STOXMATE_CONFIG || {
+            OPENAI_API_KEY: ""  // Empty fallback, will prompt for key if not provided
+        };
+        console.log("Config loaded:", window.STOXMATE_CONFIG ? "Yes" : "No");
+    </script>
     <script src="js/auth-utils.js"></script>
     <script src="js/ai-advisor.js"></script>
+    <script src="js/simple-response-formatter.js"></script>
     <script src="js/rename-migration.js"></script>
+    <script>
+        // Initialize chatbox sizing to fit the screen better
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatContainer = document.querySelector('.full-chat');
+            const chatMessages = document.querySelector('.chat-messages');
+            
+            // Adjust chat height based on viewport height for better mobile experience
+            function adjustChatHeight() {
+                const viewportHeight = window.innerHeight;
+                const navHeight = document.querySelector('nav').offsetHeight;
+                const idealChatHeight = viewportHeight - navHeight - 100; // Some padding
+                
+                if (idealChatHeight > 500) {
+                    chatContainer.style.height = `${idealChatHeight}px`;
+                    chatMessages.style.height = `${idealChatHeight - 120}px`; // Account for header and input
+                }
+            }
+            
+            // Run on page load and window resize
+            if (chatContainer && chatMessages) {
+                adjustChatHeight();
+                window.addEventListener('resize', adjustChatHeight);
+            }
+        });
+    </script>
 </body>
 </html>

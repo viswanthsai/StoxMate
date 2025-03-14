@@ -10,7 +10,7 @@ class AIAdvisor {
         this.chatHistory = [];
         this.initialized = false;
         
-        // Investment context to make responses more relevant
+        // Investment context updated for more straightforward responses
         this.investmentContext = `
             You are StoxMate AI, an investment advisor assistant. You specialize in helping users with:
             1. Asset allocation between stocks, gold, and fixed deposits
@@ -23,8 +23,19 @@ class AIAdvisor {
             - Recommended allocation for neutral market: 40% stocks, 30% gold, 30% fixed deposits
             - Current interest rates for fixed deposits: 6.0% - 7.5%
             
-            Keep your responses concise, conversational, and focused on Indian markets when applicable.
-            Always clarify that you're providing general guidance, not personalized financial advice.
+            IMPORTANT INSTRUCTIONS FOR YOUR RESPONSES:
+            - Keep your responses very concise and straightforward
+            - Use simple language, avoid complex financial jargon
+            - Limit responses to 2-3 short paragraphs maximum
+            - For complex topics, break information into bullet points
+            - Start with a direct answer to the user's question first
+            - Always clarify that you're providing general guidance, not personalized financial advice
+            - When providing numbers or recommendations, bold the key figures
+            
+            Example of good response format:
+            "Based on the neutral market conditions, I recommend allocating **40% to stocks**, **30% to gold**, and **30% to fixed deposits** for a moderate risk profile.
+            
+            This balanced approach helps protect your capital while still providing growth opportunities."
         `;
     }
 
@@ -34,7 +45,7 @@ class AIAdvisor {
      */
     async init() {
         try {
-            // Try to load API key from config file
+            // Try to load API key from config file (higher priority)
             if (window.STOXMATE_CONFIG && window.STOXMATE_CONFIG.OPENAI_API_KEY) {
                 this.apiKey = window.STOXMATE_CONFIG.OPENAI_API_KEY;
                 console.log("API key loaded from config file");
@@ -105,7 +116,7 @@ class AIAdvisor {
                 ...this.limitChatHistory(this.chatHistory)
             ];
             
-            // Configure the API request
+            // Configure the API request with lower max tokens for more concise responses
             const response = await fetch('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
                 headers: {
@@ -115,8 +126,8 @@ class AIAdvisor {
                 body: JSON.stringify({
                     model: "gpt-3.5-turbo",
                     messages: messages,
-                    max_tokens: 500,
-                    temperature: 0.7
+                    max_tokens: 350, // Reduced from 500 for more concise responses
+                    temperature: 0.6  // Slightly lower temperature for more focused responses
                 })
             });
             
@@ -290,23 +301,28 @@ function setupChatInterface() {
     }
     
     /**
-     * Add a bot message to the chat
+     * Add a bot message to the chat with enhanced formatting for simpler responses
      * @param {string} message - The message text
      */
     function addBotMessage(message) {
         const botMessage = document.createElement('div');
         botMessage.className = 'message bot';
         
-        // Format message with markdown-like syntax
+        // Format message with enhanced markdown-like syntax
         let formattedMessage = message
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold
+            .replace(/\*\*(.*?)\*\*/g, '<span class="bot-response-highlight">$1</span>')  // Bold with highlight
             .replace(/\*(.*?)\*/g, '<em>$1</em>')              // Italic
             .split('\n').join('<br>');                         // Line breaks
         
-        // Handle lists
+        // Handle lists with improved formatting
         if (message.includes('\n- ')) {
             formattedMessage = formattedMessage.replace(/<br>- /g, '<br>• ');
         }
+        
+        // Handle section headings for better structure
+        formattedMessage = formattedMessage.replace(/^(#+)\s+(.+?)$/gm, function(match, hashes, content) {
+            return `<div class="bot-section-heading">${content}</div>`;
+        });
         
         botMessage.innerHTML = `<p>${formattedMessage}</p>`;
         messagesContainer.appendChild(botMessage);
