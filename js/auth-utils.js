@@ -8,7 +8,7 @@ const AuthUtils = {
      * Initialize auth buttons on any page
      */
     initAuthButtons: function() {
-        // Ensure we have the correct auth state first
+        // Check for user session immediately on page load
         this.checkAndSetAuthState();
         
         // Then attach event listeners to buttons
@@ -16,16 +16,8 @@ const AuthUtils = {
         this.attachEventToButton('register-btn', () => window.location.href = 'register.html');
         this.attachEventToButton('logout-btn', this.handleLogout);
         
-        // For buttons added dynamically or with different selectors
+        // Find and attach handlers to buttons with text content
         this.findAndAttachButtonsByText();
-        
-        // Listen for auth state changes
-        document.addEventListener('stoxmate:authupdated', (event) => {
-            setTimeout(() => {
-                this.checkAndSetAuthState();
-                this.initAuthButtons();
-            }, 100);
-        });
     },
     
     /**
@@ -36,9 +28,8 @@ const AuthUtils = {
         const profileLink = document.querySelector('a[href="profile.html"]');
         if (!authButtons) return;
         
-        // Check if we have a stored user session AND we're not on the profile page
-        const storedUser = localStorage.getItem('stoxmate_user');
-        const isProfilePage = window.location.pathname.includes('profile.html');
+        // Check for user in localStorage (prioritize stoxmate_user)
+        const storedUser = localStorage.getItem('stoxmate_user') || localStorage.getItem('indivest_user');
         
         if (storedUser && this.isValidUserSession(storedUser)) {
             try {
@@ -57,24 +48,23 @@ const AuthUtils = {
                 
                 // Attach logout event listener
                 this.attachEventToButton('logout-btn', this.handleLogout);
+                
+                // Dispatch event for other scripts to know auth state changed
+                document.dispatchEvent(new CustomEvent('stoxmate:userloggedin', { detail: user }));
+                return true;
             } catch (e) {
                 console.error('Error parsing stored user:', e);
-                // Clear invalid session data and show login/register UI
                 localStorage.removeItem('stoxmate_user');
-                this.showLoggedOutUI(authButtons, profileLink);
-            }
-        } else {
-            // No valid user found - show login/register UI
-            this.showLoggedOutUI(authButtons, profileLink);
-            
-            // If we're on profile page but not logged in, redirect to login
-            if (isProfilePage && !storedUser) {
-                if (!sessionStorage.getItem('auth_redirect_in_progress')) {
-                    sessionStorage.setItem('auth_redirect_in_progress', 'true');
-                    window.location.href = 'login.html';
-                }
+                localStorage.removeItem('indivest_user');
             }
         }
+        
+        // No valid user found - show login/register UI
+        this.showLoggedOutUI(authButtons, profileLink);
+        
+        // Dispatch event for logged out state
+        document.dispatchEvent(new CustomEvent('stoxmate:userloggedout'));
+        return false;
     },
     
     /**
@@ -169,20 +159,39 @@ const AuthUtils = {
     /**
      * Handle logout action
      */
-    handleLogout: async function() {
-        if (window.stoxmate && window.stoxmate.supabase) {
-            try {
-                const { error } = await window.stoxmate.supabase.auth.signOut();
-                if (error) throw error;
-            } catch (err) {
-                console.error('Error signing out:', err);
+    handleLogout: function() {
+        // Clear all local storage keys
+        localStorage.removeItem('stoxmate_user');
+        localStorage.removeItem('indivest_user');
+        
+        // Clear any session storage items
+        sessionStorage.removeItem('auth_redirect_in_progress');
+        sessionStorage.removeItem('redirecting');
+        
+        // Update UI to show logged out state
+        const authButtons = document.querySelector('.auth-buttons');
+        const profileLink = document.querySelector('a[href="profile.html"]');
+        
+        if (authButtons) {
+            authButtons.innerHTML = `
+                <button class="btn btn-outline" id="login-btn">Login</button>
+                <button class="btn btn-primary" id="register-btn">Register</button>
+            `;
+            
+            // Re-attach event listeners
+            const loginBtn = document.getElementById('login-btn');
+            const registerBtn = document.getElementById('register-btn');
+            
+            if (loginBtn) {
+                loginBtn.addEventListener('click', () => window.location.href = 'login.html');
+            }
+            
+            if (registerBtn) {
+                registerBtn.addEventListener('click', () => window.location.href = 'register.html');
             }
         }
         
-        // Clear local storage
-        localStorage.removeItem('stoxmate_user');
-        
-        // Redirect to home
+        // Redirect to home page
         window.location.href = 'index.html';
     },
     
@@ -198,7 +207,10 @@ const AuthUtils = {
     }
 };
 
-// Initialize on page load
+// Run immediately on script load
+AuthUtils.initAuthButtons();
+
+// Also run when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function() {
     AuthUtils.initAuthButtons();
 });
