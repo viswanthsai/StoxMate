@@ -736,5 +736,142 @@
             }
         });
     </script>
-</body>
-</html>
+    <!-- Add the redirect fix script -->ript>
+    <script src="js/fix-redirects.js"></script>ument.addEventListener('DOMContentLoaded', function() {
+</body>        // Check if user is logged in
+
+
+</html>        const storedUser = localStorage.getItem('stoxmate_user') || localStorage.getItem('indivest_user');
+        
+        if (!storedUser) {
+            // No user found, redirect to login
+            if (!sessionStorage.getItem('auth_redirect_in_progress')) {
+                sessionStorage.setItem('auth_redirect_in_progress', 'true');
+                window.location.href = 'login.html';
+            }
+        } else {
+            try {
+                // Parse user data and update UI
+                const user = JSON.parse(storedUser);
+                
+                // Update user information in the UI
+                updateProfileUI(user);
+                
+                // Show welcome message if coming from registration
+                if (sessionStorage.getItem('registration_success') === 'true') {
+                    // Clear the flag
+                    sessionStorage.removeItem('registration_success');
+                    
+                    // Show welcome message
+                    showWelcomeMessage(user.user_metadata?.full_name || 'User');
+                }
+            } catch (e) {
+                console.error('Error parsing user data:', e);
+            }
+        }
+        
+        function updateProfileUI(user) {
+            // Update profile information based on user data
+            const profileInfo = document.querySelector('.profile-info');
+            if (profileInfo) {
+                profileInfo.innerHTML = `
+                    <h1>${user.user_metadata?.full_name || 'User'}</h1>
+                    <p>${user.email}</p>
+                    <div class="profile-badges">
+                        <span class="badge premium">Premium User</span>
+                        <span class="badge experience">1+ Year Experience</span>
+                    </div>
+                `;
+            }
+            
+            // Update profile stats
+            const profileStats = document.querySelector('.profile-stats');
+            if (profileStats) {
+                profileStats.innerHTML = `
+                    <div class="stat">
+                        <span class="stat-value">0</span>
+                        <span class="stat-label">Investments</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value positive">+0.0%</span>
+                        <span class="stat-label">Overall Return</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">₹0</span>
+                        <span class="stat-label">Portfolio Value</span>
+                    </div>
+                `;
+            }
+            
+            // Fill in personal details tab
+            const personalTab = document.getElementById('personal-tab');
+            if (personalTab) {
+                const profileSection = personalTab.querySelector('.profile-section');
+                if (profileSection) {
+                    profileSection.innerHTML = `
+                        <h3>Personal Information</h3>
+                        <form class="profile-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="fullname">Full Name</label>
+                                    <input type="text" id="fullname" class="form-control" value="${user.user_metadata?.full_name || ''}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" id="email" class="form-control" value="${user.email}" readonly>
+                                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html></body></script>    });        }            }, 5000);                setTimeout(() => toast.remove(), 300);                toast.classList.remove('show');            setTimeout(() => {            // Remove after 5 seconds                        document.head.appendChild(style);            `;                }                    opacity: 1;                    transform: translateY(0);                .toast.show {                }                    background-color: var(--success-color, #10b981);                .toast.success {                }                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);                    transition: transform 0.3s ease-out, opacity 0.3s ease-out;                    opacity: 0;                    transform: translateY(100px);                    z-index: 9999;                    font-weight: 500;                    color: white;                    border-radius: 4px;                    padding: 12px 24px;                    right: 20px;                    bottom: 20px;                    position: fixed;                .toast {            style.textContent = `            const style = document.createElement('style');            // Add some styling for the toast                        document.body.appendChild(toast);            toast.textContent = `Welcome to StoxMate, ${name}! Your account has been created successfully.`;            toast.className = 'toast success show';            const toast = document.createElement('div');            // Create a welcome toast message        function showWelcomeMessage(name) {                }            }                }                    `;                        </form>                            </div>                                <button type="submit" class="btn btn-primary">Save Changes</button>                            </div>
+                            <div class="form-actions">

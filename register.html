@@ -182,5 +182,104 @@
     <script src="js/env-check.js"></script>
     <script src="js/email-confirmation-fix.js"></script>
     <script src="js/rename-migration.js"></script>
+    <script src="js/fix-redirects.js"></script>ript>
+</body> document.addEventListener('DOMContentLoaded', function() {
+</html>            const registerForm = document.getElementById('register-form');
+
+            
+            if (registerForm) {
+                registerForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    // Get form values
+                    const fullName = document.getElementById('full-name').value.trim();
+                    const email = document.getElementById('email').value.trim();
+                    const password = document.getElementById('password').value;
+                    const confirmPassword = document.getElementById('confirm-password').value;
+                    const termsAccepted = document.getElementById('terms-checkbox').checked;
+                    const messageElement = document.getElementById('form-message');
+                    
+                    // Clear previous messages
+                    messageElement.className = 'form-message';
+                    messageElement.textContent = '';
+                    
+                    // Validate form data
+                    if (!fullName || !email || !password) {
+                        showMessage(messageElement, 'Please fill in all required fields.', 'error');
+                        return;
+                    }
+                    
+                    if (password !== confirmPassword) {
+                        showMessage(messageElement, 'Passwords do not match.', 'error');
+                        return;
+                    }
+                    
+                    if (!termsAccepted) {
+                        showMessage(messageElement, 'You must accept the Terms of Service.', 'error');
+                        return;
+                    }
+                    
+                    // Show loading state
+                    const submitBtn = registerForm.querySelector('button[type="submit"]');
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+                    
+                    try {
+                        // Attempt to register with Supabase
+                        const { data, error } = await window.supabase.auth.signUp({
+                            email,
+                            password,
+                            options: {
+                                data: { full_name: fullName },
+                                emailRedirectTo: `${window.location.origin}/profile.html`,
+                                emailConfirm: false,
+                                autoConfirm: true
+                            }
+                        });
+                        
+                        if (error) throw error;
+                        
+                        // Immediately create a confirmed user in localStorage
+                        const user = data.user;
+                        if (user) {
+                            // Add email confirmation timestamp
+                            const now = new Date().toISOString();
+                            user.email_confirmed_at = now;
+                            user.confirmed_at = now;
+                            
+                            // Store in localStorage
+                            localStorage.setItem('stoxmate_user', JSON.stringify(user));
+                            
+                            // Show success message
+                            showMessage(messageElement, 'Registration successful! Redirecting...', 'success');
+                            
+                            // Set redirect flag
+                            sessionStorage.setItem('registration_success', 'true');
+                            
+                            // Redirect to profile page
+                            setTimeout(() => {
+                                window.location.href = 'profile.html';
+                            }, 1500);
+                        } else {
+                            throw new Error('No user data returned from registration');
+                        }
+                    } catch (error) {
+                        console.error('Registration error:', error);
+                        showMessage(messageElement, `Error: ${error.message}`, 'error');
+                        
+                        // Reset button state
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = 'Create Account';
+                    }
+                });
+            }
+            
+            // Helper function to show messages
+            function showMessage(element, message, type) {
+                element.textContent = message;
+                element.className = `form-message ${type}`;
+            }
+        });
+    </script>
 </body>
 </html>
