@@ -1,0 +1,19 @@
+# Netlify configuration file
+
+[build]
+  publish = "./"
+  
+[build.environment]
+  # These settings affect the build process, not runtime
+  NODE_VERSION = "16"
+
+# This tells Netlify to replace ENV_VARS placeholders in your HTML
+[template.environment]
+  OPENAI_API_KEY = "Your OpenAI API Key"
+
+# This injects the environment variable into the HTML
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false

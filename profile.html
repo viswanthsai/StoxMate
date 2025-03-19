@@ -35,7 +35,7 @@
             <a href="profile.html" class="active">Profile</a>
         </div>
         <div class="auth-buttons">
-            <button class="btn btn-outline">Logout</button>
+            <!-- Will be dynamically populated based on authentication status -->
         </div>
         <div class="hamburger">
             <div class="bar"></div>
@@ -49,30 +49,31 @@
         <div class="container">
             <div class="profile-header-content">
                 <div class="profile-avatar">
-                    <img src="https://ui-avatars.com/api/?name=Raj+Sharma&background=3b82f6&color=fff&size=128" alt="Profile Picture">
-                    <button class="edit-avatar">
+                    <img src="https://ui-avatars.com/api/?name=User&background=3b82f6&color=fff&size=128" alt="Profile Picture" id="profile-image">
+                    <button class="edit-avatar" id="edit-avatar-btn">
                         <i class="fas fa-camera"></i>
                     </button>
                 </div>
                 <div class="profile-info">
-                    <h1>Raj Sharma</h1>
+                    <h1 id="user-displayname">User</h1>
+                    <p id="user-email">user@example.com</p>
                     <div class="profile-badges">
-                        <span class="badge premium">Premium</span>
-                        <span class="badge experience">Experienced Investor</span>
+                        <span class="badge premium">Premium User</span>
+                        <span class="badge experience">New Investor</span>
                     </div>
                 </div>
                 <div class="profile-stats">
                     <div class="stat">
+                        <span class="stat-value" id="investments-count">0</span>
+                        <span class="stat-label">Investments</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value positive" id="overall-return">+0.0%</span>
+                        <span class="stat-label">Overall Return</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="portfolio-value">₹0</span>
                         <span class="stat-label">Portfolio Value</span>
-                        <span class="stat-value">₹8,45,000</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">Returns (YTD)</span>
-                        <span class="stat-value positive">+12.4%</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">Risk Profile</span>
-                        <span class="stat-value">Moderate</span>
                     </div>
                 </div>
             </div>
@@ -93,34 +94,34 @@
             <div class="tab-content active" id="personal-tab">
                 <div class="profile-section">
                     <h2>Personal Information</h2>
-                    <form class="profile-form">
+                    <form class="profile-form" id="personal-info-form">
                         <div class="form-group">
                             <label for="fullname">Full Name</label>
-                            <input type="text" id="fullname" value="Raj Sharma" class="form-control">
+                            <input type="text" id="fullname" class="form-control" placeholder="Your full name">
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="email">Email Address</label>
-                                <input type="email" id="email" value="raj.sharma@gmail.com" class="form-control">
+                                <input type="email" id="email" class="form-control" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="phone">Phone Number</label>
-                                <input type="tel" id="phone" value="+91 98765 43210" class="form-control">
+                                <input type="tel" id="phone" class="form-control" placeholder="Your phone number">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="dob">Date of Birth</label>
-                                <input type="date" id="dob" value="1985-06-15" class="form-control">
+                                <input type="date" id="dob" class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="pan">PAN Number</label>
-                                <input type="text" id="pan" value="ABCDE1234F" class="form-control">
+                                <input type="text" id="pan" class="form-control" placeholder="ABCDE1234F">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="address">Address</label>
-                            <textarea id="address" class="form-control">123 Green Avenue, Bandra West, Mumbai, Maharashtra 400050</textarea>
+                            <textarea id="address" class="form-control" placeholder="Your full address"></textarea>
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -132,7 +133,7 @@
             <div class="tab-content" id="investment-tab">
                 <div class="profile-section">
                     <h2>Investment Preferences</h2>
-                    <form class="profile-form">
+                    <form class="profile-form" id="investment-prefs-form">
                         <div class="form-group">
                             <label>Risk Tolerance</label>
                             <div class="risk-slider-container">
@@ -150,70 +151,19 @@
                             <label>Investment Goals</label>
                             <div class="checkbox-group">
                                 <label class="checkbox-label">
-                                    <input type="checkbox" checked> Retirement Planning
+                                    <input type="checkbox" name="goals" value="retirement"> Retirement Planning
                                 </label>
                                 <label class="checkbox-label">
-                                    <input type="checkbox" checked> Wealth Creation
+                                    <input type="checkbox" name="goals" value="wealth"> Wealth Creation
                                 </label>
                                 <label class="checkbox-label">
-                                    <input type="checkbox"> Tax Saving
+                                    <input type="checkbox" name="goals" value="tax"> Tax Saving
                                 </label>
                                 <label class="checkbox-label">
-                                    <input type="checkbox" checked> Children's Education
+                                    <input type="checkbox" name="goals" value="education"> Children's Education
                                 </label>
                                 <label class="checkbox-label">
-                                    <input type="checkbox"> Home Purchase
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="monthly-investment">Monthly Investment Capacity</label>
-                                <div class="input-with-prefix">
-                                    <span class="input-prefix">₹</span>
-                                    <input type="text" id="monthly-investment" value="50,000" class="form-control">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="investment-horizon">Investment Horizon</label>
-                                <select id="investment-horizon" class="form-control">
-                                    <option>Less than 1 year</option>
-                                    <option>1-3 years</option>
-                                    <option selected>3-5 years</option>
-                                    <option>5-10 years</option>
-                                    <option>More than 10 years</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Preferred Investment Assets</label>
-                            <div class="preferred-assets">
-                                <label class="asset-option">
-                                    <input type="checkbox" checked>
-                                    <div class="asset-icon"><i class="fas fa-chart-line"></i></div>
-                                    <span>Stocks</span>
-                                </label>
-                                <label class="asset-option">
-                                    <input type="checkbox" checked>
-                                    <div class="asset-icon"><i class="fas fa-coins"></i></div>
-                                    <span>Gold</span>
-                                </label>
-                                <label class="asset-option">
-                                    <input type="checkbox" checked>
-                                    <div class="asset-icon"><i class="fas fa-landmark"></i></div>
-                                    <span>Fixed Deposits</span>
-                                </label>
-                                <label class="asset-option">
-                                    <input type="checkbox">
-                                    <div class="asset-icon"><i class="fas fa-building"></i></div>
-                                    <span>Real Estate</span>
-                                </label>
-                                <label class="asset-option">
-                                    <input type="checkbox" checked>
-                                    <div class="asset-icon"><i class="fas fa-file-invoice-dollar"></i></div>
-                                    <span>Bonds</span>
+                                    <input type="checkbox" name="goals" value="home"> Home Purchase
                                 </label>
                             </div>
                         </div>
@@ -228,7 +178,7 @@
             <div class="tab-content" id="security-tab">
                 <div class="profile-section">
                     <h2>Security Settings</h2>
-                    <form class="profile-form">
+                    <form class="profile-form" id="security-form">
                         <div class="form-group">
                             <h3>Change Password</h3>
                             <div class="form-row">
@@ -247,76 +197,10 @@
                                     <input type="password" id="confirm-password" class="form-control">
                                 </div>
                             </div>
-                            <div class="password-requirements">
-                                <p>Password must contain:</p>
-                                <ul>
-                                    <li class="requirement met">At least 8 characters</li>
-                                    <li class="requirement met">At least one uppercase letter</li>
-                                    <li class="requirement">At least one number</li>
-                                    <li class="requirement">At least one special character</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <h3>Two-Factor Authentication</h3>
-                            <div class="toggle-container">
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <span class="slider round"></span>
-                                </label>
-                                <div class="toggle-label">
-                                    <span>Enabled</span>
-                                    <p>Two-factor authentication adds an additional layer of security to your account</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <h3>Login History</h3>
-                            <div class="login-history">
-                                <div class="login-item">
-                                    <div class="login-info">
-                                        <i class="fas fa-laptop"></i>
-                                        <div class="login-details">
-                                            <span class="device">Windows PC - Chrome</span>
-                                            <span class="location">Mumbai, India</span>
-                                        </div>
-                                    </div>
-                                    <div class="login-time">
-                                        <span>Current Session</span>
-                                    </div>
-                                </div>
-                                <div class="login-item">
-                                    <div class="login-info">
-                                        <i class="fas fa-mobile-alt"></i>
-                                        <div class="login-details">
-                                            <span class="device">iPhone - Safari</span>
-                                            <span class="location">Mumbai, India</span>
-                                        </div>
-                                    </div>
-                                    <div class="login-time">
-                                        <span>Yesterday, 15:42</span>
-                                    </div>
-                                </div>
-                                <div class="login-item">
-                                    <div class="login-info">
-                                        <i class="fas fa-tablet-alt"></i>
-                                        <div class="login-details">
-                                            <span class="device">iPad - Safari</span>
-                                            <span class="location">New Delhi, India</span>
-                                        </div>
-                                    </div>
-                                    <div class="login-time">
-                                        <span>March 10, 09:17</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="btn btn-outline btn-sm view-all-btn">View All Login Activity</button>
                         </div>
                         
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Save Security Settings</button>
+                            <button type="submit" class="btn btn-primary">Update Password</button>
                         </div>
                     </form>
                 </div>
@@ -325,7 +209,7 @@
             <div class="tab-content" id="notifications-tab">
                 <div class="profile-section">
                     <h2>Notification Preferences</h2>
-                    <form class="profile-form">
+                    <form class="profile-form" id="notifications-form">
                         <div class="form-group">
                             <h3>Communication Channels</h3>
                             <div class="notification-channels">
@@ -335,7 +219,7 @@
                                         <span>Email</span>
                                     </div>
                                     <label class="switch">
-                                        <input type="checkbox" checked>
+                                        <input type="checkbox" name="channel_email" checked>
                                         <span class="slider round"></span>
                                     </label>
                                 </div>
@@ -345,104 +229,10 @@
                                         <span>SMS</span>
                                     </div>
                                     <label class="switch">
-                                        <input type="checkbox" checked>
+                                        <input type="checkbox" name="channel_sms">
                                         <span class="slider round"></span>
                                     </label>
                                 </div>
-                                <div class="channel-option">
-                                    <div class="channel-info">
-                                        <i class="fas fa-bell"></i>
-                                        <span>Push Notifications</span>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" checked>
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                                <div class="channel-option">
-                                    <div class="channel-info">
-                                        <i class="fab fa-whatsapp"></i>
-                                        <span>WhatsApp</span>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <h3>Notification Types</h3>
-                            <div class="notification-types">
-                                <div class="notification-type">
-                                    <div class="type-info">
-                                        <h4>Portfolio Updates</h4>
-                                        <p>Daily and weekly summaries of your portfolio performance</p>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" checked>
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                                <div class="notification-type">
-                                    <div class="type-info">
-                                        <h4>Market Alerts</h4>
-                                        <p>Important updates about market conditions and PE ratio changes</p>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" checked>
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                                <div class="notification-type">
-                                    <div class="type-info">
-                                        <h4>Investment Recommendations</h4>
-                                        <p>Personalized investment opportunities based on your preferences</p>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" checked>
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                                <div class="notification-type">
-                                    <div class="type-info">
-                                        <h4>Educational Content</h4>
-                                        <p>Articles, videos, and resources to improve your investment knowledge</p>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                                <div class="notification-type">
-                                    <div class="type-info">
-                                        <h4>Account Activity</h4>
-                                        <p>Login alerts and security notifications</p>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" checked>
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <h3>Communication Frequency</h3>
-                            <div class="frequency-options">
-                                <label class="radio-option">
-                                    <input type="radio" name="frequency">
-                                    <span>Real-time updates only</span>
-                                </label>
-                                <label class="radio-option">
-                                    <input type="radio" name="frequency" checked>
-                                    <span>Daily digest (One email per day)</span>
-                                </label>
-                                <label class="radio-option">
-                                    <input type="radio" name="frequency">
-                                    <span>Weekly summary</span>
-                                </label>
                             </div>
                         </div>
                         
@@ -455,162 +245,8 @@
         </div>
     </section>
 
-    <!-- Portfolio Summary Section -->
-    <section class="portfolio-summary">
-        <div class="container">
-            <h2>Portfolio Summary</h2>
-            <div class="portfolio-cards">
-                <div class="portfolio-card">
-                    <div class="card-header">
-                        <h3>Asset Allocation</h3>
-                        <div class="card-actions">
-                            <button class="btn-icon"><i class="fas fa-sync-alt"></i></button>
-                        </div>
-                    </div>
-                    <div class="allocation-chart">
-                        <div class="chart-placeholder" id="allocation-chart"></div>
-                        <div class="allocation-legend">
-                            <div class="legend-item">
-                                <span class="legend-color" style="background-color: var(--primary-color);"></span>
-                                <span class="legend-text">Stocks (45%)</span>
-                            </div>
-                            <div class="legend-item">
-                                <span class="legend-color" style="background-color: var(--warning-color);"></span>
-                                <span class="legend-text">Gold (30%)</span>
-                            </div>
-                            <div class="legend-item">
-                                <span class="legend-color" style="background-color: var(--accent-color);"></span>
-                                <span class="legend-text">FDs (15%)</span>
-                            </div>
-                            <div class="legend-item">
-                                <span class="legend-color" style="background-color: var(--neutral-500);"></span>
-                                <span class="legend-text">Others (10%)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="portfolio-card">
-                    <div class="card-header">
-                        <h3>Performance</h3>
-                        <div class="time-filter">
-                            <button class="filter-btn" data-period="1m">1M</button>
-                            <button class="filter-btn active" data-period="6m">6M</button>
-                            <button class="filter-btn" data-period="1y">1Y</button>
-                            <button class="filter-btn" data-period="all">ALL</button>
-                        </div>
-                    </div>
-                    <div class="performance-stats">
-                        <div class="stat-card up">
-                            <span class="stat-label">Total Return</span>
-                            <span class="stat-value">+12.4%</span>
-                            <span class="stat-amount">+₹93,450</span>
-                        </div>
-                        <div class="stat-card">
-                            <span class="stat-label">NIFTY 50</span>
-                            <span class="stat-value">+8.7%</span>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="performance-chart"></canvas>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="investment-table">
-                <h3>Investment Holdings</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th>Invested Value</th>
-                                <th>Current Value</th>
-                                <th>Return</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="investment-name">
-                                        <div class="investment-icon stocks">
-                                            <i class="fas fa-chart-line"></i>
-                                        </div>
-                                        <div>
-                                            <span class="name">NIFTY 50 Index Fund</span>
-                                            <span class="details">UTI Mutual Fund</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>Equity</td>
-                                <td>₹3,00,000</td>
-                                <td>₹3,54,000</td>
-                                <td class="return-cell positive">+18.0%</td>
-                                <td><button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="investment-name">
-                                        <div class="investment-icon gold">
-                                            <i class="fas fa-coins"></i>
-                                        </div>
-                                        <div>
-                                            <span class="name">Gold ETF</span>
-                                            <span class="details">SBI Gold ETF</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>Commodity</td>
-                                <td>₹2,50,000</td>
-                                <td>₹2,75,000</td>
-                                <td class="return-cell positive">+10.0%</td>
-                                <td><button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="investment-name">
-                                        <div class="investment-icon fd">
-                                            <i class="fas fa-landmark"></i>
-                                        </div>
-                                        <div>
-                                            <span class="name">Fixed Deposit</span>
-                                            <span class="details">HDFC Bank</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>Debt</td>
-                                <td>₹1,50,000</td>
-                                <td>₹1,59,000</td>
-                                <td class="return-cell positive">+6.0%</td>
-                                <td><button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="investment-name">
-                                        <div class="investment-icon other">
-                                            <i class="fas fa-file-invoice-dollar"></i>
-                                        </div>
-                                        <div>
-                                            <span class="name">Corporate Bond</span>
-                                            <span class="details">ICICI Corporate Bond</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>Debt</td>
-                                <td>₹1,00,000</td>
-                                <td>₹1,07,000</td>
-                                <td class="return-cell positive">+7.0%</td>
-                                <td><button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <button class="btn btn-outline view-all-btn">View All Investments</button>
-            </div>
-        </div>
-    </section>
+    <!-- Status Message -->
+    <div class="status-message" id="status-message"></div>
 
     <!-- Footer -->
     <footer>
@@ -662,216 +298,294 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
-    <script src="chart-utils.js"></script>
-    <script src="profile.js"></script>
-    <script src="js/global-fixes.js"></script>
-    <script src="js/rename-migration.js"></script>
+    <!-- Scripts -->
+    <script src="js/auth-utils.js"></script>
     <script>
-        // Fix profile page authentication
-
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize tab switching
+            initTabs();
+            
+            // Handle authentication and profile loading
+            checkAuthentication();
+            
+            // Set up form submissions
+            setupFormHandlers();
+            
+            // Hide loading screen
+            setTimeout(function() {
+                document.getElementById('loading-screen').style.display = 'none';
+            }, 700);
+        });
+        
+        function initTabs() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons and tabs
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(tab => tab.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Show corresponding tab
+                    const tabId = this.getAttribute('data-tab') + '-tab';
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        }
+        
+        function checkAuthentication() {
             // Check if user is logged in
-            const storedUser = localStorage.getItem('indivest_user');
+            const storedUser = localStorage.getItem('stoxmate_user') || localStorage.getItem('indivest_user');
             
             if (!storedUser) {
                 // No user found, redirect to login
-                if (!sessionStorage.getItem('auth_redirect_in_progress')) {
-                    sessionStorage.setItem('auth_redirect_in_progress', 'true');
-                    window.location.href = 'login.html';
-                    return;
-                }
+                window.location.href = 'login.html?redirect=profile';
             } else {
                 try {
-                    // Parse user data
+                    // Parse user data and update UI
                     const user = JSON.parse(storedUser);
-                    
-                    // Update profile info with user data
-                    const profileNameH1 = document.querySelector('.profile-info h1');
-                    if (profileNameH1) {
-                        profileNameH1.textContent = user.user_metadata?.full_name || user.email.split('@')[0];
-                    }
-                    
-                    // Fix user greeting in nav
-                    const userGreeting = document.querySelector('.auth-buttons .user-greeting');
-                    if (userGreeting) {
-                        userGreeting.textContent = 'Hello, ' + (user.user_metadata?.full_name || user.email.split('@')[0]);
-                    } else {
-                        // Force correct auth buttons if greeting not found
-                        const authButtons = document.querySelector('.auth-buttons');
-                        if (authButtons) {
-                            authButtons.innerHTML = `
-                                <span class="user-greeting">Hello, ${user.user_metadata?.full_name || user.email.split('@')[0]}</span>
-                                <button class="btn btn-outline" id="logout-btn">Logout</button>
-                            `;
-                            
-                            // Add logout event listener
-                            document.getElementById('logout-btn')?.addEventListener('click', function() {
-                                localStorage.removeItem('indivest_user');
-                                window.location.href = 'index.html';
-                            });
-                        }
-                    }
-                    
-                    // Update profile avatar
-                    const avatarImg = document.querySelector('.profile-avatar img');
-                    if (avatarImg) {
-                        const name = encodeURIComponent(user.user_metadata?.full_name || user.email.split('@')[0]);
-                        avatarImg.src = `https://ui-avatars.com/api/?name=${name}&background=3b82f6&color=fff&size=128`;
-                    }
-                    
-                    // Update form fields
-                    const fullnameInput = document.getElementById('fullname');
-                    if (fullnameInput) {
-                        fullnameInput.value = user.user_metadata?.full_name || '';
-                    }
-                    
-                    const emailInput = document.getElementById('email');
-                    if (emailInput) {
-                        emailInput.value = user.email || '';
-                    }
+                    loadUserProfile(user);
                 } catch (e) {
                     console.error('Error parsing user data:', e);
+                    showStatusMessage('Error loading profile. Please try logging in again.', 'error');
                 }
-            }
-        });
-    </script>
-    <!-- Add the redirect fix script -->ript>
-    <script src="js/fix-redirects.js"></script>ument.addEventListener('DOMContentLoaded', function() {
-</body>        // Check if user is logged in
-
-
-</html>        const storedUser = localStorage.getItem('stoxmate_user') || localStorage.getItem('indivest_user');
-        
-        if (!storedUser) {
-            // No user found, redirect to login
-            if (!sessionStorage.getItem('auth_redirect_in_progress')) {
-                sessionStorage.setItem('auth_redirect_in_progress', 'true');
-                window.location.href = 'login.html';
-            }
-        } else {
-            try {
-                // Parse user data and update UI
-                const user = JSON.parse(storedUser);
-                
-                // Update user information in the UI
-                updateProfileUI(user);
-                
-                // Show welcome message if coming from registration
-                if (sessionStorage.getItem('registration_success') === 'true') {
-                    // Clear the flag
-                    sessionStorage.removeItem('registration_success');
-                    
-                    // Show welcome message
-                    showWelcomeMessage(user.user_metadata?.full_name || 'User');
-                }
-            } catch (e) {
-                console.error('Error parsing user data:', e);
             }
         }
         
-        function updateProfileUI(user) {
-            // Update profile information based on user data
-            const profileInfo = document.querySelector('.profile-info');
-            if (profileInfo) {
-                profileInfo.innerHTML = `
-                    <h1>${user.user_metadata?.full_name || 'User'}</h1>
-                    <p>${user.email}</p>
-                    <div class="profile-badges">
-                        <span class="badge premium">Premium User</span>
-                        <span class="badge experience">1+ Year Experience</span>
-                    </div>
-                `;
+        function loadUserProfile(user) {
+            // Update profile header
+            document.getElementById('user-displayname').textContent = user.user_metadata?.full_name || 'User';
+            document.getElementById('user-email').textContent = user.email;
+            
+            // Update profile image
+            const profileImage = document.getElementById('profile-image');
+            const name = user.user_metadata?.full_name || 'User';
+            profileImage.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=3b82f6&color=fff&size=128`;
+            
+            // Fill personal info form
+            document.getElementById('fullname').value = user.user_metadata?.full_name || '';
+            document.getElementById('email').value = user.email;
+            document.getElementById('phone').value = user.user_metadata?.phone_number || '';
+            
+            // Load additional profile data if available
+            if (user.user_metadata?.dob) {
+                document.getElementById('dob').value = user.user_metadata.dob;
+            }
+            if (user.user_metadata?.pan) {
+                document.getElementById('pan').value = user.user_metadata.pan;
+            }
+            if (user.user_metadata?.address) {
+                document.getElementById('address').value = user.user_metadata.address;
+            }
+        }
+        
+        function setupFormHandlers() {
+            // Personal info form
+            const personalForm = document.getElementById('personal-info-form');
+            if (personalForm) {
+                personalForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    savePersonalInfo();
+                });
             }
             
-            // Update profile stats
-            const profileStats = document.querySelector('.profile-stats');
-            if (profileStats) {
-                profileStats.innerHTML = `
-                    <div class="stat">
-                        <span class="stat-value">0</span>
-                        <span class="stat-label">Investments</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-value positive">+0.0%</span>
-                        <span class="stat-label">Overall Return</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-value">₹0</span>
-                        <span class="stat-label">Portfolio Value</span>
-                    </div>
-                `;
+            // Investment preferences form
+            const investmentForm = document.getElementById('investment-prefs-form');
+            if (investmentForm) {
+                investmentForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveInvestmentPreferences();
+                });
             }
             
-            // Fill in personal details tab
-            const personalTab = document.getElementById('personal-tab');
-            if (personalTab) {
-                const profileSection = personalTab.querySelector('.profile-section');
-                if (profileSection) {
-                    profileSection.innerHTML = `
-                        <h3>Personal Information</h3>
-                        <form class="profile-form">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="fullname">Full Name</label>
-                                    <input type="text" id="fullname" class="form-control" value="${user.user_metadata?.full_name || ''}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="email">Email Address</label>
-                                    <input type="email" id="email" class="form-control" value="${user.email}" readonly>
-                                </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</html></body></script>    });        }            }, 5000);                setTimeout(() => toast.remove(), 300);                toast.classList.remove('show');            setTimeout(() => {            // Remove after 5 seconds                        document.head.appendChild(style);            `;                }                    opacity: 1;                    transform: translateY(0);                .toast.show {                }                    background-color: var(--success-color, #10b981);                .toast.success {                }                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);                    transition: transform 0.3s ease-out, opacity 0.3s ease-out;                    opacity: 0;                    transform: translateY(100px);                    z-index: 9999;                    font-weight: 500;                    color: white;                    border-radius: 4px;                    padding: 12px 24px;                    right: 20px;                    bottom: 20px;                    position: fixed;                .toast {            style.textContent = `            const style = document.createElement('style');            // Add some styling for the toast                        document.body.appendChild(toast);            toast.textContent = `Welcome to StoxMate, ${name}! Your account has been created successfully.`;            toast.className = 'toast success show';            const toast = document.createElement('div');            // Create a welcome toast message        function showWelcomeMessage(name) {                }            }                }                    `;                        </form>                            </div>                                <button type="submit" class="btn btn-primary">Save Changes</button>                            </div>
-                            <div class="form-actions">
+            // Security form
+            const securityForm = document.getElementById('security-form');
+            if (securityForm) {
+                securityForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    changePassword();
+                });
+            }
+            
+            // Notifications form
+            const notificationsForm = document.getElementById('notifications-form');
+            if (notificationsForm) {
+                notificationsForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveNotificationSettings();
+                });
+            }
+        }
+        
+        function savePersonalInfo() {
+            // Get form values
+            const fullName = document.getElementById('fullname').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const dob = document.getElementById('dob').value;
+            const pan = document.getElementById('pan').value.trim();
+            const address = document.getElementById('address').value.trim();
+            
+            // Simple validation
+            if (!fullName) {
+                showStatusMessage('Please enter your full name', 'error');
+                return;
+            }
+            
+            // Get user data
+            const storedUser = localStorage.getItem('stoxmate_user') || localStorage.getItem('indivest_user');
+            if (!storedUser) {
+                showStatusMessage('User session not found. Please login again.', 'error');
+                return;
+            }
+            
+            try {
+                let user = JSON.parse(storedUser);
+                
+                // Update user_metadata
+                user.user_metadata = user.user_metadata || {};
+                user.user_metadata.full_name = fullName;
+                user.user_metadata.phone_number = phone;
+                user.user_metadata.dob = dob;
+                user.user_metadata.pan = pan;
+                user.user_metadata.address = address;
+                
+                // Save updated user data to localStorage
+                localStorage.setItem('stoxmate_user', JSON.stringify(user));
+                
+                // Update UI
+                document.getElementById('user-displayname').textContent = fullName;
+                
+                // Update profile image
+                const profileImage = document.getElementById('profile-image');
+                profileImage.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=3b82f6&color=fff&size=128`;
+                
+                // Show success message
+                showStatusMessage('Personal information saved successfully', 'success');
+                
+            } catch (e) {
+                console.error('Error updating user data:', e);
+                showStatusMessage('Failed to save personal information. Please try again.', 'error');
+            }
+        }
+        
+        function saveInvestmentPreferences() {
+            // Get risk tolerance
+            const riskTolerance = document.getElementById('risk-tolerance').value;
+            
+            // Get selected goals
+            const goalCheckboxes = document.querySelectorAll('input[name="goals"]:checked');
+            const goals = Array.from(goalCheckboxes).map(cb => cb.value);
+            
+            // Get stored user data
+            const storedUser = localStorage.getItem('stoxmate_user') || localStorage.getItem('indivest_user');
+            if (!storedUser) {
+                showStatusMessage('User session not found. Please login again.', 'error');
+                return;
+            }
+            
+            try {
+                let user = JSON.parse(storedUser);
+                
+                // Update user_metadata
+                user.user_metadata = user.user_metadata || {};
+                user.user_metadata.risk_tolerance = riskTolerance;
+                user.user_metadata.investment_goals = goals;
+                
+                // Save updated user data to localStorage
+                localStorage.setItem('stoxmate_user', JSON.stringify(user));
+                
+                // Show success message
+                showStatusMessage('Investment preferences saved successfully', 'success');
+                
+            } catch (e) {
+                console.error('Error updating user data:', e);
+                showStatusMessage('Failed to save investment preferences. Please try again.', 'error');
+            }
+        }
+        
+        function changePassword() {
+            // Get password values
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            // Validate inputs
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showStatusMessage('Please fill in all password fields', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showStatusMessage('New passwords do not match', 'error');
+                return;
+            }
+            
+            // Password strength check
+            if (newPassword.length < 8) {
+                showStatusMessage('New password must be at least 8 characters long', 'error');
+                return;
+            }
+            
+            // In a real application, you would make an API call to change the password
+            // For this demo, we'll just simulate success
+            
+            // Clear password fields
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            
+            // Show success message
+            showStatusMessage('Password changed successfully', 'success');
+        }
+        
+        function saveNotificationSettings() {
+            // Get notification settings
+            const emailNotifications = document.querySelector('input[name="channel_email"]').checked;
+            const smsNotifications = document.querySelector('input[name="channel_sms"]').checked;
+            
+            // Get stored user data
+            const storedUser = localStorage.getItem('stoxmate_user') || localStorage.getItem('indivest_user');
+            if (!storedUser) {
+                showStatusMessage('User session not found. Please login again.', 'error');
+                return;
+            }
+            
+            try {
+                let user = JSON.parse(storedUser);
+                
+                // Update user_metadata
+                user.user_metadata = user.user_metadata || {};
+                user.user_metadata.notifications = {
+                    email: emailNotifications,
+                    sms: smsNotifications
+                };
+                
+                // Save updated user data to localStorage
+                localStorage.setItem('stoxmate_user', JSON.stringify(user));
+                
+                // Show success message
+                showStatusMessage('Notification settings saved successfully', 'success');
+                
+            } catch (e) {
+                console.error('Error updating user data:', e);
+                showStatusMessage('Failed to save notification settings. Please try again.', 'error');
+            }
+        }
+        
+        function showStatusMessage(message, type) {
+            const statusElement = document.getElementById('status-message');
+            statusElement.textContent = message;
+            statusElement.className = 'status-message ' + type + ' show';
+            
+            // Auto-hide after 3 seconds
+            setTimeout(function() {
+                statusElement.className = 'status-message';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

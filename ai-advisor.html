@@ -363,6 +363,13 @@
     </footer>
 
     <!-- Include scripts -->
+    <script>
+        // Setup environment variables for Netlify
+        window.ENV_VARS = window.ENV_VARS || {};
+        
+        // This will be replaced by Netlify's environment variable injection
+        // See: https://docs.netlify.com/configure-builds/environment-variables/#inject-during-runtime
+    </script>
     <script src="config.js"></script>
     <script>
         // Ensure STOXMATE_CONFIG is properly initialized

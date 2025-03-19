@@ -45,7 +45,15 @@ class AIAdvisor {
      */
     async init() {
         try {
-            // Try to load API key from config file (higher priority)
+            // Check for Netlify environment variable first
+            if (window.ENV_VARS && window.ENV_VARS.OPENAI_API_KEY) {
+                this.apiKey = window.ENV_VARS.OPENAI_API_KEY;
+                console.log("API key loaded from Netlify environment");
+                this.initialized = true;
+                return true;
+            }
+            
+            // Try to load API key from config file
             if (window.STOXMATE_CONFIG && window.STOXMATE_CONFIG.OPENAI_API_KEY) {
                 this.apiKey = window.STOXMATE_CONFIG.OPENAI_API_KEY;
                 console.log("API key loaded from config file");
@@ -53,7 +61,17 @@ class AIAdvisor {
                 return true;
             }
             
-            // If no config file, try to load from localStorage (for development)
+            // Check for API key in URL parameters (for easy testing)
+            const urlParams = new URLSearchParams(window.location.search);
+            const apiKeyParam = urlParams.get('api_key');
+            if (apiKeyParam) {
+                this.apiKey = apiKeyParam;
+                console.log("API key loaded from URL parameter");
+                this.initialized = true;
+                return true;
+            }
+            
+            // If no config file, try to load from localStorage
             const savedKey = localStorage.getItem('stoxmate_api_key');
             if (savedKey) {
                 this.apiKey = savedKey;
