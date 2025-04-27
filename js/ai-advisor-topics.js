@@ -1,56 +1,66 @@
 /**
- * StoxMate AI Advisor Topics
- * Handles topic selection and populates predefined questions for topics
+ * AI Advisor Topics
+ * Organizes investment topics and common questions for the AI advisor
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Get topic items
-    const topicItems = document.querySelectorAll('.topic-item');
-    if (!topicItems) return;
-    
-    // Topic definitions with predefined questions
+    // Define topics and their associated questions
     const topics = {
-        'Asset Allocation': [
-            "How should I allocate my portfolio in the current market?",
-            "What's the ideal allocation for a conservative investor?",
-            "How does market PE affect asset allocation?",
-            "When should I rebalance my portfolio?"
+        'general': [
+            'How should I start investing?',
+            'What investment strategy is best for beginners?', 
+            'How to build a balanced portfolio?',
+            'What are the current market conditions?'
         ],
-        'Market Analysis': [
-            "Is this a good time to invest in the market?",
-            "What does the current NIFTY PE ratio indicate?",
-            "How to interpret market indicators?",
-            "Which sectors are performing well currently?"
+        'stocks': [
+            'How to pick good stocks?',
+            'What is the NIFTY PE ratio now?', 
+            'Are blue chip stocks good investments?',
+            'Should I invest in smallcap stocks?'
         ],
-        'Fixed Deposits': [
-            "Are FDs a good investment right now?",
-            "How do I compare FD rates across banks?",
-            "Should I choose cumulative or non-cumulative FD?",
-            "What are tax implications of fixed deposits?"
+        'mutual-funds': [
+            'What are index funds?',
+            'How to select the best mutual fund?',
+            'What is expense ratio?',
+            'Active vs passive mutual funds?'
         ],
-        'Personal Finance': [
-            "How much should I invest every month?",
-            "How do I create an emergency fund?",
-            "How to plan for retirement?",
-            "What's the 50-30-20 budget rule?"
+        'retirement': [
+            'How much should I save for retirement?',
+            'What is an NPS account?',
+            'Best options for retirement in India?',
+            'When should I start retirement planning?'
         ],
-        'Investment Education': [
-            "What is dollar cost averaging?",
-            "Explain the concept of compound interest",
-            "What are index funds and how do they work?",
-            "What's the difference between active and passive investing?"
+        'tax': [
+            'How to save taxes on investments?',
+            'Tell me about ELSS funds',
+            'What is Section 80C?',
+            'Tax implications of selling stocks?'
+        ],
+        'risk': [
+            'How to reduce risk in my portfolio?',
+            'What is risk-adjusted return?',
+            'How much risk should I take?',
+            'Hedging strategies for volatile markets'
         ]
     };
+
+    // Find topic items in the sidebar
+    const topicItems = document.querySelectorAll('.topic-item');
     
-    // Add click event to topic items
+    // Add click events to topic items
     topicItems.forEach(item => {
         item.addEventListener('click', function() {
-            const topicName = this.querySelector('span').textContent;
-            displayTopicQuestions(topicName);
+            // Remove active class from all topics
+            topicItems.forEach(t => t.classList.remove('active'));
             
-            // Highlight the selected topic
-            topicItems.forEach(i => i.classList.remove('active'));
+            // Add active class to clicked topic
             this.classList.add('active');
+            
+            // Get the topic name
+            const topicName = this.getAttribute('data-topic');
+            
+            // Display questions for this topic
+            displayTopicQuestions(topicName);
         });
     });
     
@@ -68,28 +78,59 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get questions for this topic
         const questions = topics[topicName] || [];
         
-        // Add questions as chips
-        questions.forEach(question => {
+        // Add questions as chips with animation
+        questions.forEach((question, index) => {
             const chip = document.createElement('button');
             chip.className = 'question-chip';
             chip.textContent = question;
+            chip.style.opacity = '0';
+            chip.style.transform = 'translateY(10px)';
             
             // Add click event to set the question in chat input
             chip.addEventListener('click', function() {
                 const chatInput = document.querySelector('.chat-input input');
                 if (chatInput) {
                     chatInput.value = this.textContent;
-                    chatInput.focus();
                     
-                    // Trigger send button if it exists
-                    const sendBtn = document.querySelector('.chat-input .send-btn');
-                    if (sendBtn) {
-                        sendBtn.click();
+                    // Collapse the suggestion panel
+                    const suggestionPanel = document.querySelector('.suggestion-panel');
+                    if (suggestionPanel) {
+                        suggestionPanel.classList.add('collapsed');
+                        localStorage.setItem('suggestionsPanelCollapsed', 'true');
                     }
+                    
+                    // Small delay to allow visual feedback
+                    setTimeout(() => {
+                        // Trigger send button if it exists
+                        const sendBtn = document.querySelector('.send-btn');
+                        if (sendBtn) sendBtn.click();
+                        
+                        // Focus on input for next question
+                        chatInput.focus();
+                    }, 100);
                 }
             });
             
             questionsContainer.appendChild(chip);
+            
+            // Stagger the animation of chips appearing
+            setTimeout(() => {
+                chip.style.opacity = '1';
+                chip.style.transform = 'translateY(0)';
+                chip.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            }, 50 * index);
         });
+        
+        // Show the suggestion panel when changing topics
+        const suggestionPanel = document.querySelector('.suggestion-panel');
+        if (suggestionPanel) {
+            suggestionPanel.classList.remove('collapsed');
+        }
+    }
+    
+    // Initialize with the first topic (general)
+    const defaultTopic = document.querySelector('.topic-item.active');
+    if (defaultTopic) {
+        displayTopicQuestions(defaultTopic.getAttribute('data-topic'));
     }
 });

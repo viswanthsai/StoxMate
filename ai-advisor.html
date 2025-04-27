@@ -5,206 +5,461 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Investment Advisor - StoxMate</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="ai-advisor.css">
     <link rel="stylesheet" href="loader.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* AI Advisor specific styles */
-        .advisor-hero {
-            padding: 8rem 0 4rem;
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            text-align: center;
+        /* Updated AI Advisor Styles */
+        .advisor-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            grid-gap: 2rem;
+            height: calc(100vh - 150px);
+            min-height: 600px;
+        }
+        
+        /* Sidebar with topics */
+        .advisor-sidebar {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .sidebar-header {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--neutral-200);
+            padding-bottom: 1rem;
+        }
+        
+        .sidebar-header h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--neutral-900);
+        }
+        
+        .sidebar-header p {
+            font-size: 0.9rem;
+            color: var(--neutral-600);
+            margin: 0;
+        }
+        
+        .topics-list {
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            flex-grow: 1;
+        }
+        
+        .topic-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        
+        .topic-item:hover {
+            background-color: var(--neutral-100);
+            border-color: var(--neutral-200);
+        }
+        
+        .topic-item.active {
+            background-color: var(--primary-color-light);
+            border-color: var(--primary-color);
+        }
+        
+        .topic-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background-color: var(--neutral-100);
+            margin-right: 12px;
+            color: var(--primary-color);
+        }
+        
+        .topic-item.active .topic-icon {
+            background-color: var(--primary-color);
             color: white;
         }
         
-        .advisor-hero h1 {
-            margin-bottom: 1rem;
-            font-size: 2.5rem;
+        .topic-name {
+            font-weight: 500;
+            color: var(--neutral-800);
         }
         
-        .advisor-hero .highlight {
-            color: #3b82f6;
+        .topic-item.active .topic-name {
+            color: var(--primary-color);
         }
         
-        .advisor-hero p {
-            font-size: 1.2rem;
-            color: #e2e8f0;
-            max-width: 700px;
-            margin: 0 auto;
+        .sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid var(--neutral-200);
+            padding-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--neutral-600);
         }
         
-        .advisor-section {
-            padding: 4rem 0;
-            background-color: #f8fafc;
-        }
-        
-        .advisor-container {
-            display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 2rem;
-            max-width: 1400px; /* Increased from 1200px for wider content */
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-        
-        .full-chat {
-            height: 800px; /* Increased from 600px for taller chat */
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        /* Chat area */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            background: white;
             border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             overflow: hidden;
+            height: 100%;
+        }
+        
+        .chat-header {
+            display: flex;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--neutral-200);
             background-color: white;
         }
         
-        .full-chat .chat-messages {
-            height: 680px; /* Increased from 480px to match new container height */
+        .chat-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+        
+        .chat-title h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .chat-title p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--success-color);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .chat-title p::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--success-color);
+        }
+        
+        .chat-info {
+            margin-left: auto;
+            color: var(--neutral-600);
+            font-size: 0.9rem;
+        }
+        
+        .chat-messages {
+            flex: 1;
             overflow-y: auto;
             padding: 1.5rem;
-            font-size: 1.05rem; /* Slightly larger font for better readability */
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            background-color: var(--neutral-50);
         }
         
-        .full-chat .message {
-            margin-bottom: 1.5rem;
-            margin-bottom: 1.8rem; /* More spacing between messages */
-            max-width: 85%; /* Wider messages */
+        .message {
+            max-width: 85%;
             position: relative;
-            line-height: 1.5; /* Improved readability */
+            animation: fadeInUp 0.3s ease forwards;
         }
         
-        .full-chat .message.user {
-            margin-left: auto;
-            background-color: #3b82f6;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message.user {
+            align-self: flex-end;
+            background-color: var(--primary-color);
             color: white;
-            border-radius: 18px 18px 0 18px;
-            padding: 1rem 1.4rem; /* More padding */
-            font-size: 1.1rem; /* Larger font */
+            border-radius: 18px 18px 4px 18px;
+            padding: 0.9rem 1.2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
-        .full-chat .message.bot {
-            margin-right: auto;
-            background-color: #f1f5f9;
-        }
-        
-        .chat-sidebar {
+        .message.bot {
+            align-self: flex-start;
             background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
+            color: var(--neutral-800);
+            border-radius: 18px 18px 18px 4px;
+            padding: 1.1rem 1.3rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         
-        .sidebar-section {
-            margin-bottom: 2rem;
+        .message.bot p {
+            margin: 0;
+            line-height: 1.5;
         }
         
-        .sidebar-section h3 {
-            margin-bottom: 1rem;
+        .message.bot .highlight-number {
+            color: var(--primary-color);
             font-weight: 600;
-            color: #1e293b;
+        }
+        
+        .message.bot .highlight-recommendation {
+            background-color: rgba(59, 130, 246, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 2px 0;
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 6px;
+            display: inline-block;
+            text-align: right;
+            width: 100%;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 0.5rem 1rem;
+        }
+        
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--neutral-400);
+            animation: typingBounce 1.4s infinite ease-in-out both;
+        }
+        
+        .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.15s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.3s; }
+        
+        @keyframes typingBounce {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
         }
         
         .question-chips {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+            padding: 0 1.5rem;
         }
         
         .question-chip {
-            background-color: #f1f5f9;
-            color: #1e293b;
+            background-color: var(--neutral-100);
+            border: 1px solid var(--neutral-200);
+            color: var(--neutral-700);
+            border-radius: 20px;
             padding: 0.6rem 1rem;
-            border-radius: 100px;
             font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-            text-align: left;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         .question-chip:hover {
-            background-color: #e2e8f0;
-            transform: translateY(-2px);
+            background-color: var(--neutral-200);
+            border-color: var(--neutral-300);
         }
         
-        .topic-item {
-            padding: 0.75rem;
-            border-bottom: 1px solid #e2e8f0;
+        .chat-input-container {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid var(--neutral-200);
+            background-color: white;
+            position: relative;
+        }
+        
+        .chat-input {
+            display: flex;
+            align-items: center;
+            background-color: var(--neutral-100);
+            border-radius: 28px;
+            padding: 0 0.5rem 0 1.25rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .chat-input input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 0.9rem 0;
+            font-size: 0.95rem;
+            background: transparent;
+            color: var(--neutral-800);
+        }
+        
+        .chat-input input::placeholder {
+            color: var(--neutral-500);
+        }
+        
+        .send-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            outline: none;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
-        .topic-item:hover {
-            background-color: #f8fafc;
+        .send-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
         }
         
-        .topic-item i {
-            color: #3b82f6;
+        .send-btn:active {
+            transform: translateY(0);
         }
         
-        .api-key-input {
+        /* AI capability badges */
+        .ai-capabilities {
             display: flex;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
         
-        .api-key-input input {
+        .capability-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             flex: 1;
-            padding: 0.5rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 4px;
+            min-width: 250px;
         }
         
-        .api-key-input button {
-            background-color: #3b82f6;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 0.5rem 1rem;
-            cursor: pointer;
+        .capability-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background-color: var(--primary-color-light);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
         }
         
-        /* Responsive styles */
-        @media (max-width: 1440px) {
-            .advisor-container {
-                max-width: 1200px;
-            }
+        .capability-content h3 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1rem;
         }
         
+        .capability-content p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--neutral-600);
+        }
+        
+        /* Responsive layout */
         @media (max-width: 992px) {
             .advisor-container {
                 grid-template-columns: 1fr;
+                height: auto;
             }
             
-            .full-chat {
-                height: 700px; /* Adjusted for medium screens */
+            .advisor-sidebar {
+                height: auto;
+                max-height: 250px;
             }
             
-            .full-chat .chat-messages {
-                height: 580px;
+            .topics-list {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
             }
             
-            .full-chat .message {
-                max-width: 90%;
+            .topic-item {
+                min-width: 150px;
+                flex-direction: column;
+                text-align: center;
+                padding: 1rem;
+            }
+            
+            .topic-icon {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+            
+            .chat-container {
+                height: 70vh;
             }
         }
         
         @media (max-width: 576px) {
-            .advisor-hero h1 {
-                font-size: 2rem;
+            .advisor-container {
+                padding: 1rem 0.5rem;
             }
             
-            .full-chat {
-                height: 600px; /* Adjusted for small screens */
+            .message {
+                max-width: 90%;
             }
             
-            .full-chat .chat-messages {
-                height: 480px;
+            .chat-header {
+                padding: 1rem;
             }
             
-            .full-chat .message {
-                max-width: 95%;
+            .chat-messages {
+                padding: 1rem;
+            }
+            
+            .chat-input-container {
+                padding: 1rem;
+            }
+            
+            .question-chips {
+                padding: 0 1rem;
+            }
+            
+            .capability-badge {
+                min-width: 100%;
             }
         }
     </style>
@@ -223,7 +478,8 @@
             <a href="profile.html">Profile</a>
         </div>
         <div class="auth-buttons">
-            <!-- Will be populated by auth-utils.js -->
+            <button class="btn btn-outline">Login</button>
+            <button class="btn btn-primary">Register</button>
         </div>
         <div class="hamburger">
             <div class="bar"></div>
@@ -232,81 +488,153 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="advisor-hero">
+    <!-- AI Advisor Section -->
+    <section class="page-header">
         <div class="container">
-            <h1>Your Personal <span class="highlight">AI Investment Guide</span></h1>
-            <p>Get instant, expert-level answers to all your investment questions, market analysis, and personalized guidance</p>
+            <h1>AI Investment <span class="highlight">Advisor</span></h1>
+            <p>Get personalized financial guidance powered by AI</p>
         </div>
     </section>
 
-    <!-- AI Advisor Main Section -->
-    <section class="advisor-section">
+    <section class="ai-capabilities-section">
+        <div class="container">
+            <div class="ai-capabilities">
+                <div class="capability-badge">
+                    <div class="capability-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="capability-content">
+                        <h3>Portfolio Analysis</h3>
+                        <p>Get insights on your investments</p>
+                    </div>
+                </div>
+                
+                <div class="capability-badge">
+                    <div class="capability-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="capability-content">
+                        <h3>Investment Advice</h3>
+                        <p>Personalized recommendations</p>
+                    </div>
+                </div>
+                
+                <div class="capability-badge">
+                    <div class="capability-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="capability-content">
+                        <h3>Market Updates</h3>
+                        <p>Latest trends and analyses</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="advisor-main-section">
         <div class="advisor-container">
-            <div class="chat-container full-chat">
+            <!-- Topics Sidebar -->
+            <div class="advisor-sidebar">
+                <div class="sidebar-header">
+                    <h2>Investment Topics</h2>
+                    <p>Choose a topic to get started</p>
+                </div>
+                
+                <div class="topics-list">
+                    <div class="topic-item active" data-topic="general">
+                        <div class="topic-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="topic-name">General Advice</div>
+                    </div>
+                    
+                    <div class="topic-item" data-topic="stocks">
+                        <div class="topic-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="topic-name">Stocks & ETFs</div>
+                    </div>
+                    
+                    <div class="topic-item" data-topic="mutual-funds">
+                        <div class="topic-icon">
+                            <i class="fas fa-funnel-dollar"></i>
+                        </div>
+                        <div class="topic-name">Mutual Funds</div>
+                    </div>
+                    
+                    <div class="topic-item" data-topic="retirement">
+                        <div class="topic-icon">
+                            <i class="fas fa-umbrella-beach"></i>
+                        </div>
+                        <div class="topic-name">Retirement</div>
+                    </div>
+                    
+                    <div class="topic-item" data-topic="tax">
+                        <div class="topic-icon">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="topic-name">Tax Planning</div>
+                    </div>
+                    
+                    <div class="topic-item" data-topic="risk">
+                        <div class="topic-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="topic-name">Risk Management</div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-footer">
+                    All advice is for information purposes only. Consult with a financial advisor for personalized guidance.
+                </div>
+            </div>
+            
+            <!-- Chat Container -->
+            <div class="chat-container">
                 <div class="chat-header">
                     <div class="chat-avatar">
                         <i class="fas fa-robot"></i>
                     </div>
                     <div class="chat-title">
                         <h3>StoxMate AI Advisor</h3>
-                        <p>Online now</p>
+                        <p>Online</p>
+                    </div>
+                    <div class="chat-info">
+                        <i class="fas fa-info-circle"></i>
                     </div>
                 </div>
                 
                 <div class="chat-messages">
-                    <!-- Messages will be added here dynamically -->
+                    <!-- Welcome message -->
+                    <div class="message bot">
+                        <p>👋 Hello! I'm your StoxMate AI investment advisor. How can I help you with your investment decisions today?</p>
+                        <span class="message-time">Just now</span>
+                    </div>
                 </div>
                 
-                <div class="chat-input">
-                    <input type="text" placeholder="Ask me about investing, market trends, or financial planning...">
-                    <button class="send-btn"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-            
-            <div class="chat-sidebar">
-                <div class="sidebar-section">
-                    <h3>Popular Questions</h3>
+                <div class="suggestion-panel">
+                    <div class="suggestion-header">
+                        <h4>Suggested Questions</h4>
+                        <button class="toggle-suggestions" aria-label="Toggle suggestions">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                    </div>
                     <div class="question-chips">
-                        <button class="question-chip">What is the best investment strategy right now?</button>
-                        <button class="question-chip">What is a good PE ratio for investing?</button>
-                        <button class="question-chip">Should I invest in gold or FD?</button>
-                        <button class="question-chip">How much should I invest monthly?</button>
-                        <button class="question-chip">Explain SIP investment</button>
-                        <button class="question-chip">What are index funds?</button>
+                        <button class="question-chip">How should I start investing?</button>
+                        <button class="question-chip">What is the current NIFTY PE ratio?</button>
+                        <button class="question-chip">Are mutual funds better than stocks?</button>
+                        <button class="question-chip">How to diversify my portfolio?</button>
                     </div>
                 </div>
                 
-                <div class="sidebar-section">
-                    <h3>Topics</h3>
-                    <div class="topic-list">
-                        <div class="topic-item">
-                            <i class="fas fa-chart-pie"></i>
-                            <span>Asset Allocation</span>
-                        </div>
-                        <div class="topic-item">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Market Analysis</span>
-                        </div>
-                        <div class="topic-item">
-                            <i class="fas fa-university"></i>
-                            <span>Fixed Deposits</span>
-                        </div>
-                        <div class="topic-item">
-                            <i class="fas fa-money-bill-wave"></i>
-                            <span>Personal Finance</span>
-                        </div>
-                        <div class="topic-item">
-                            <i class="fas fa-graduation-cap"></i>
-                            <span>Investment Education</span>
-                        </div>
+                <div class="chat-input-container">
+                    <div class="chat-input">
+                        <input type="text" placeholder="Type your investment question here..." autocomplete="off">
+                        <button class="send-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
                     </div>
-                </div>
-                
-                <div class="sidebar-section">
-                    <h3>About AI Advisor</h3>
-                    <p>StoxMate AI Advisor uses advanced artificial intelligence to provide investment guidance based on current market conditions and financial best practices.</p>
-                    <p><small>Remember: This is an AI assistant providing general guidance, not personalized financial advice. Always consult with a qualified financial advisor for your specific situation.</small></p>
                 </div>
             </div>
         </div>
@@ -362,50 +690,325 @@
         </div>
     </footer>
 
-    <!-- Include scripts -->
+    <!-- Scripts -->
     <script>
-        // Setup environment variables for Netlify
-        window.ENV_VARS = window.ENV_VARS || {};
-        
-        // This will be replaced by Netlify's environment variable injection
-        // See: https://docs.netlify.com/configure-builds/environment-variables/#inject-during-runtime
-    </script>
-    <script src="config.js"></script>
-    <script>
-        // Ensure STOXMATE_CONFIG is properly initialized
-        window.STOXMATE_CONFIG = window.STOXMATE_CONFIG || {
-            OPENAI_API_KEY: ""  // Empty fallback, will prompt for key if not provided
-        };
-        console.log("Config loaded:", window.STOXMATE_CONFIG ? "Yes" : "No");
-    </script>
-    <script src="js/auth-utils.js"></script>
-    <script src="js/ai-advisor.js"></script>
-    <script src="js/simple-response-formatter.js"></script>
-    <script src="js/rename-migration.js"></script>
-    <script>
-        // Initialize chatbox sizing to fit the screen better
+        // JavaScript for topic selection
         document.addEventListener('DOMContentLoaded', function() {
-            const chatContainer = document.querySelector('.full-chat');
-            const chatMessages = document.querySelector('.chat-messages');
+            const topicItems = document.querySelectorAll('.topic-item');
             
-            // Adjust chat height based on viewport height for better mobile experience
-            function adjustChatHeight() {
-                const viewportHeight = window.innerHeight;
-                const navHeight = document.querySelector('nav').offsetHeight;
-                const idealChatHeight = viewportHeight - navHeight - 100; // Some padding
+            topicItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all topics
+                    topicItems.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked topic
+                    this.classList.add('active');
+                    
+                    // Get the topic name
+                    const topicName = this.getAttribute('data-topic');
+                    
+                    // Update question chips based on the topic
+                    updateQuestionChips(topicName);
+                });
+            });
+            
+            // Chat functionality
+            const chatInput = document.querySelector('.chat-input input');
+            const sendBtn = document.querySelector('.send-btn');
+            const messagesContainer = document.querySelector('.chat-messages');
+            
+            function handleSendMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return;
                 
-                if (idealChatHeight > 500) {
-                    chatContainer.style.height = `${idealChatHeight}px`;
-                    chatMessages.style.height = `${idealChatHeight - 120}px`; // Account for header and input
+                // Clear input
+                chatInput.value = '';
+                
+                // Add user message
+                addUserMessage(message);
+                
+                // Show typing indicator
+                showTypingIndicator();
+                
+                // Get AI response
+                setTimeout(() => {
+                    // Remove typing indicator
+                    removeTypingIndicator();
+                    
+                    // Get response from AI (this will be replaced by actual API call)
+                    const aiResponse = window.stoxmate?.aiAdvisor ? 
+                        window.stoxmate.aiAdvisor.getResponse(message) :
+                        getPlaceholderResponse(message);
+                    
+                    // If we have a real API response (Promise)
+                    if (aiResponse instanceof Promise) {
+                        aiResponse.then(response => {
+                            addBotMessage(response);
+                        }).catch(error => {
+                            addBotMessage("Sorry, I encountered an error. Please try again later.");
+                        });
+                    } else {
+                        // Using the placeholder response
+                        addBotMessage(aiResponse);
+                    }
+                }, 1500);
+            }
+            
+            // Set up event handlers
+            sendBtn.addEventListener('click', handleSendMessage);
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleSendMessage();
+                }
+            });
+            
+            // Set up question chips
+            const questionChips = document.querySelectorAll('.question-chip');
+            questionChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    chatInput.value = this.textContent;
+                    handleSendMessage();
+                });
+            });
+            
+            function addUserMessage(message) {
+                const messageEl = document.createElement('div');
+                messageEl.className = 'message user';
+                
+                const currentTime = new Date();
+                const timeStr = currentTime.getHours() + ':' + 
+                    (currentTime.getMinutes() < 10 ? '0' : '') + currentTime.getMinutes();
+                
+                messageEl.innerHTML = `
+                    <p>${message}</p>
+                    <span class="message-time">${timeStr}</span>
+                `;
+                
+                messagesContainer.appendChild(messageEl);
+                scrollToBottom();
+            }
+            
+            function addBotMessage(message) {
+                const messageEl = document.createElement('div');
+                messageEl.className = 'message bot';
+                
+                const currentTime = new Date();
+                const timeStr = currentTime.getHours() + ':' + 
+                    (currentTime.getMinutes() < 10 ? '0' : '') + currentTime.getMinutes();
+                
+                messageEl.innerHTML = `
+                    <p>${message}</p>
+                    <span class="message-time">${timeStr}</span>
+                `;
+                
+                messagesContainer.appendChild(messageEl);
+                scrollToBottom();
+            }
+            
+            function showTypingIndicator() {
+                const typingIndicator = document.createElement('div');
+                typingIndicator.className = 'message bot typing';
+                typingIndicator.innerHTML = `
+                    <div class="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                `;
+                
+                messagesContainer.appendChild(typingIndicator);
+                scrollToBottom();
+            }
+            
+            function removeTypingIndicator() {
+                const typingIndicator = document.querySelector('.typing');
+                if (typingIndicator) {
+                    typingIndicator.remove();
                 }
             }
             
-            // Run on page load and window resize
-            if (chatContainer && chatMessages) {
-                adjustChatHeight();
-                window.addEventListener('resize', adjustChatHeight);
+            function scrollToBottom() {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+            
+            function updateQuestionChips(topic) {
+                const chipsContainer = document.querySelector('.question-chips');
+                
+                // Define questions by topic
+                const questions = {
+                    'general': [
+                        'How should I start investing?',
+                        'What investment strategy is best for beginners?',
+                        'How to build a balanced portfolio?',
+                        'What are the current market conditions?'
+                    ],
+                    'stocks': [
+                        'How to pick good stocks?',
+                        'What is the NIFTY PE ratio now?',
+                        'Are blue chip stocks good investments?',
+                        'Should I invest in smallcap stocks?'
+                    ],
+                    'mutual-funds': [
+                        'What are index funds?',
+                        'How to select the best mutual fund?',
+                        'What is expense ratio?',
+                        'Active vs passive mutual funds?'
+                    ],
+                    'retirement': [
+                        'How much should I save for retirement?',
+                        'What is an NPS account?',
+                        'Best options for retirement in India?',
+                        'When should I start retirement planning?'
+                    ],
+                    'tax': [
+                        'How to save taxes on investments?',
+                        'Tell me about ELSS funds',
+                        'What is Section 80C?',
+                        'Tax implications of selling stocks?'
+                    ],
+                    'risk': [
+                        'How to reduce risk in my portfolio?',
+                        'What is risk-adjusted return?',
+                        'How much risk should I take?',
+                        'Hedging strategies for volatile markets'
+                    ]
+                };
+                
+                // Get questions for selected topic
+                const topicQuestions = questions[topic] || questions['general'];
+                
+                // Update chips
+                chipsContainer.innerHTML = '';
+                topicQuestions.forEach(q => {
+                    const chip = document.createElement('button');
+                    chip.className = 'question-chip';
+                    chip.textContent = q;
+                    chip.addEventListener('click', function() {
+                        chatInput.value = this.textContent;
+                        handleSendMessage();
+                    });
+                    chipsContainer.appendChild(chip);
+                });
+                
+                // Uncollapse the panel when changing topics (to show new options)
+                suggestionPanel.classList.remove('collapsed');
+            }
+            
+            // Placeholder response function for testing without API
+            function getPlaceholderResponse(message) {
+                const lowerMsg = message.toLowerCase();
+                
+                if (lowerMsg.includes('hello') || lowerMsg.includes('hi ')) {
+                    return "Hello! I'm your AI investment advisor. What would you like to know about investing?";
+                }
+                
+                if (lowerMsg.includes('pe ratio') || lowerMsg.includes('nifty pe')) {
+                    return "The current NIFTY PE ratio is around 23.5, which is slightly above historical averages. This suggests the market is moderately overvalued, so consider a slightly conservative allocation approach with gradual investments.";
+                }
+                
+                if (lowerMsg.includes('mutual fund') || lowerMsg.includes('etf')) {
+                    return "Mutual funds and ETFs both offer diversification, but differ in how they're traded and managed. ETFs generally have lower expense ratios (0.1-0.5%) compared to mutual funds (1-2%). For beginners, index funds are often a good starting point.";
+                }
+                
+                if (lowerMsg.includes('start investing') || lowerMsg.includes('beginner')) {
+                    return "Start with these 3 steps: (1) Build an emergency fund of 6 months' expenses, (2) Begin with an index fund that tracks the NIFTY 50, and (3) Set up a systematic investment plan (SIP) to invest regularly. Start small and increase gradually as you learn more.";
+                }
+                
+                if (lowerMsg.includes('diversify') || lowerMsg.includes('diversification')) {
+                    return "A well-diversified portfolio might include 50-60% in equity mutual funds/ETFs, 20-30% in debt instruments, 10-15% in gold, and some cash. Consider diversifying within each asset class too – large, mid, and small cap stocks across different sectors.";
+                }
+                
+                return "That's an interesting question about investing. To give you specific advice, I'd need to consider your financial goals, risk tolerance, and investment timeline. What are your investment goals?";
+            }
+            
+            // Enhanced suggestion panel functionality
+            const suggestionPanel = document.querySelector('.suggestion-panel');
+            const toggleSuggestionsBtn = document.querySelector('.toggle-suggestions');
+            const suggestionHeader = document.querySelector('.suggestion-header');
+            
+            // Toggle suggestions panel
+            function toggleSuggestions() {
+                suggestionPanel.classList.toggle('collapsed');
+                
+                // Store preference in localStorage
+                const isCollapsed = suggestionPanel.classList.contains('collapsed');
+                localStorage.setItem('suggestionsPanelCollapsed', isCollapsed);
+            }
+            
+            // Set up event listeners for suggestion panel
+            if (toggleSuggestionsBtn) {
+                toggleSuggestionsBtn.addEventListener('click', toggleSuggestions);
+            }
+            
+            if (suggestionHeader) {
+                suggestionHeader.addEventListener('click', function(e) {
+                    // Only toggle if click wasn't on the toggle button (handled separately)
+                    if (!e.target.closest('.toggle-suggestions')) {
+                        toggleSuggestions();
+                    }
+                });
+            }
+            
+            // Restore user preference for suggestion panel
+            const preferCollapsed = localStorage.getItem('suggestionsPanelCollapsed');
+            if (preferCollapsed === 'true') {
+                suggestionPanel.classList.add('collapsed');
+            }
+            
+            // Enhanced question chip functionality
+            const questionChips = document.querySelectorAll('.question-chip');
+            questionChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    const question = this.textContent;
+                    
+                    // Set the question in input
+                    chatInput.value = question;
+                    
+                    // Collapse suggestions panel after selection
+                    suggestionPanel.classList.add('collapsed');
+                    localStorage.setItem('suggestionsPanelCollapsed', 'true');
+                    
+                    // Add slight delay before sending to allow UI update
+                    setTimeout(() => {
+                        handleSendMessage();
+                        // Focus on input for next question
+                        chatInput.focus();
+                    }, 100);
+                });
+            });
+            
+            // Update function for changing topic questions
+            function updateQuestionChips(topic) {
+                // ...existing code for loading questions by topic...
+                
+                // After updating chips, add the click handlers again
+                document.querySelectorAll('.question-chip').forEach(chip => {
+                    chip.addEventListener('click', function() {
+                        const question = this.textContent;
+                        chatInput.value = question;
+                        
+                        // Collapse suggestions panel after selection
+                        suggestionPanel.classList.add('collapsed');
+                        localStorage.setItem('suggestionsPanelCollapsed', 'true');
+                        
+                        setTimeout(() => {
+                            handleSendMessage();
+                            chatInput.focus(); 
+                        }, 100);
+                    });
+                });
+                
+                // Uncollapse the panel when changing topics (to show new options)
+                suggestionPanel.classList.remove('collapsed');
             }
         });
     </script>
+
+    <script src="js/auth-utils.js"></script>
+    <script src="js/simple-response-formatter.js"></script>
+    <script src="js/ai-advisor.js"></script>
+    <script src="js/ai-advisor-topics.js"></script>
+    <script src="js/rename-migration.js"></script>
+    <script src="js/branding-update.js"></script>
 </body>
 </html>

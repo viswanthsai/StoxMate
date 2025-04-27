@@ -1,0 +1,235 @@
+/* AI Advisor Specific CSS */
+
+:root {
+    --primary-color-light: rgba(59, 130, 246, 0.1);
+    --primary-dark: #1d4ed8;
+}
+
+/* Page header styling */
+.page-header {
+    padding: 6rem 5% 3rem;
+    background-color: var(--neutral-900);
+    color: white;
+    text-align: center;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.page-header .highlight {
+    color: var(--primary-color);
+    position: relative;
+    display: inline-block;
+}
+
+.page-header .highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: -5px;
+    right: -5px;
+    height: 10px;
+    background-color: rgba(59, 130, 246, 0.2);
+    z-index: -1;
+    border-radius: 10px;
+}
+
+.page-header p {
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    color: var(--neutral-300);
+}
+
+/* AI capabilities section */
+.ai-capabilities-section {
+    padding: 3rem 5% 2rem;
+    background-color: white;
+}
+
+.advisor-main-section {
+    padding: 2rem 5% 5rem;
+    background-color: var(--neutral-100);
+    min-height: 600px;
+}
+
+/* Message animations and enhancements */
+.message {
+    position: relative;
+    transition: transform 0.2s ease;
+}
+
+.message.bot::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -6px;
+    width: 12px;
+    height: 12px;
+    background-color: white;
+    transform: rotate(45deg);
+}
+
+.message.user::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: -6px;
+    width: 12px;
+    height: 12px;
+    background-color: var(--primary-color);
+    transform: rotate(45deg);
+}
+
+.message.bot:hover {
+    transform: translateY(-2px);
+}
+
+/* Markdown formatting within messages */
+.message.bot h3 {
+    margin: 1rem 0 0.5rem;
+    font-size: 1.1rem;
+    color: var(--neutral-900);
+}
+
+.message.bot ul, .message.bot ol {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.message.bot li {
+    margin-bottom: 0.25rem;
+}
+
+.message.bot code {
+    background-color: var(--neutral-100);
+    padding: 0.15rem 0.3rem;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 0.95em;
+}
+
+.message.bot a {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* Suggestion panel styling */
+.suggestion-panel {
+    border-top: 1px solid var(--neutral-200);
+    background-color: white;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    overflow: hidden;
+    max-height: 200px;
+}
+
+.suggestion-panel.collapsed {
+    max-height: 44px; /* Just show the header when collapsed */
+}
+
+.suggestion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+}
+
+.suggestion-header h4 {
+    font-size: 0.9rem;
+    margin: 0;
+    color: var(--neutral-700);
+    font-weight: 500;
+}
+
+.toggle-suggestions {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.toggle-suggestions:hover {
+    background-color: var(--primary-color-light);
+}
+
+.suggestion-panel.collapsed .toggle-suggestions i {
+    transform: rotate(180deg);
+}
+
+.question-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0 1.5rem 1.25rem;
+    transition: opacity 0.3s ease;
+}
+
+.suggestion-panel.collapsed .question-chips {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.question-chip {
+    background-color: var(--neutral-100);
+    border: 1px solid var(--neutral-200);
+    color: var(--neutral-700);
+    border-radius: 20px;
+    padding: 0.6rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.question-chip:hover {
+    background-color: var(--primary-color-light);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+}
+
+.question-chip:active {
+    transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .page-header {
+        padding: 5rem 5% 2rem;
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .advisor-main-section {
+        padding: 1rem 5% 4rem;
+    }
+}
+
+/* Adapt for responsive layouts */
+@media (max-width: 576px) {
+    .suggestion-header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .question-chips {
+        padding: 0 1rem 1rem;
+    }
+}

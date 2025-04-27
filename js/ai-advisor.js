@@ -1,88 +1,28 @@
 /**
  * StoxMate AI Advisor
- * This module handles interactions with ChatGPT API to provide investment advice
+ * This module handles interactions with Gemini API to provide investment advice
  */
 
 class AIAdvisor {
     constructor() {
-        this.apiKey = null;
+        // Hardcode Gemini API key - no need to prompt user
+        this.apiKey = "AIzaSyDGYmnQPWCY1Yk00UUr1EbNO3f4VamEtwU";
+        this.initialized = true;
         this.isLoading = false;
         this.chatHistory = [];
-        this.initialized = false;
-        
-        // Investment context updated for more straightforward responses
-        this.investmentContext = `
-            You are StoxMate AI, an investment advisor assistant. You specialize in helping users with:
-            1. Asset allocation between stocks, gold, and fixed deposits
-            2. Understanding market indicators like PE ratios and market trends
-            3. Basic investment concepts and education
-            4. Personal finance guidance
-            
-            Current market information:
-            - NIFTY 50 PE Ratio: Around 20.0 (considered neutral)
-            - Recommended allocation for neutral market: 40% stocks, 30% gold, 30% fixed deposits
-            - Current interest rates for fixed deposits: 6.0% - 7.5%
-            
-            IMPORTANT INSTRUCTIONS FOR YOUR RESPONSES:
-            - Keep your responses very concise and straightforward
-            - Use simple language, avoid complex financial jargon
-            - Limit responses to 2-3 short paragraphs maximum
-            - For complex topics, break information into bullet points
-            - Start with a direct answer to the user's question first
-            - Always clarify that you're providing general guidance, not personalized financial advice
-            - When providing numbers or recommendations, bold the key figures
-            
-            Example of good response format:
-            "Based on the neutral market conditions, I recommend allocating **40% to stocks**, **30% to gold**, and **30% to fixed deposits** for a moderate risk profile.
-            
-            This balanced approach helps protect your capital while still providing growth opportunities."
-        `;
+        // Updated context for shorter, conversational replies
+        this.investmentContext = "You are StoxMate AI, a friendly investment advisor. Keep your answers short, conversational, and easy to understand. Focus on key takeaways. Provide helpful, conservative financial advice for the Indian market. Use NIFTY PE ratio (high >22 = conservative, low <17 = aggressive equities). Always clarify you're an AI, not a certified financial advisor.";
     }
 
     /**
-     * Initialize the advisor with API key
+     * Initialize the advisor - always returns true since API key is hardcoded
      * @returns {Promise<boolean>} Whether initialization was successful
      */
     async init() {
         try {
-            // Check for Netlify environment variable first
-            if (window.ENV_VARS && window.ENV_VARS.OPENAI_API_KEY) {
-                this.apiKey = window.ENV_VARS.OPENAI_API_KEY;
-                console.log("API key loaded from Netlify environment");
-                this.initialized = true;
-                return true;
-            }
-            
-            // Try to load API key from config file
-            if (window.STOXMATE_CONFIG && window.STOXMATE_CONFIG.OPENAI_API_KEY) {
-                this.apiKey = window.STOXMATE_CONFIG.OPENAI_API_KEY;
-                console.log("API key loaded from config file");
-                this.initialized = true;
-                return true;
-            }
-            
-            // Check for API key in URL parameters (for easy testing)
-            const urlParams = new URLSearchParams(window.location.search);
-            const apiKeyParam = urlParams.get('api_key');
-            if (apiKeyParam) {
-                this.apiKey = apiKeyParam;
-                console.log("API key loaded from URL parameter");
-                this.initialized = true;
-                return true;
-            }
-            
-            // If no config file, try to load from localStorage
-            const savedKey = localStorage.getItem('stoxmate_api_key');
-            if (savedKey) {
-                this.apiKey = savedKey;
-                console.log("API key loaded from localStorage");
-                this.initialized = true;
-                return true;
-            }
-            
-            // No API key found
-            console.warn("No API key found for AI Advisor");
-            return false;
+            // API key is hardcoded, so initialization always succeeds
+            console.log("AI Advisor initialized with hardcoded Gemini API key");
+            return true;
         } catch (error) {
             console.error("Error initializing AI Advisor:", error);
             return false;
@@ -90,28 +30,11 @@ class AIAdvisor {
     }
 
     /**
-     * Set API key manually (for development only)
-     * @param {string} key - OpenAI API key
-     */
-    setApiKey(key) {
-        if (!key) return false;
-        
-        this.apiKey = key;
-        localStorage.setItem('stoxmate_api_key', key);
-        this.initialized = true;
-        return true;
-    }
-
-    /**
-     * Send a query to ChatGPT and get a response
+     * Send a query to Gemini API and get a response
      * @param {string} userQuery - The user's question
-     * @returns {Promise<string>} - ChatGPT's response
+     * @returns {Promise<string>} - Gemini's response
      */
     async getResponse(userQuery) {
-        if (!this.initialized || !this.apiKey) {
-            return "AI Advisor is not properly initialized. Please check your API key configuration.";
-        }
-
         if (!userQuery.trim()) {
             return "Please ask a question about investments or financial planning.";
         }
@@ -125,49 +48,77 @@ class AIAdvisor {
                 content: userQuery
             });
             
-            // Prepare messages including context and history
-            const messages = [
+            // Format messages for Gemini API - simplified for now
+            // Include system context and the latest user query
+            const contents = [
                 {
-                    role: "system",
-                    content: this.investmentContext
-                },
-                ...this.limitChatHistory(this.chatHistory)
+                    role: "user",
+                    parts: [{ text: this.investmentContext + "\n\nUser: " + userQuery }]
+                }
+                // Future improvement: Add limited chat history here if needed
             ];
             
-            // Configure the API request with lower max tokens for more concise responses
-            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            // Configure the API request using v1beta and gemini-1.5-flash-latest model
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${this.apiKey}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.apiKey}`
                 },
                 body: JSON.stringify({
-                    model: "gpt-3.5-turbo",
-                    messages: messages,
-                    max_tokens: 350, // Reduced from 500 for more concise responses
-                    temperature: 0.6  // Slightly lower temperature for more focused responses
+                    contents: contents,
+                    safetySettings: [
+                        {
+                            category: "HARM_CATEGORY_HARASSMENT",
+                            threshold: "BLOCK_ONLY_HIGH"
+                        },
+                        {
+                            category: "HARM_CATEGORY_HATE_SPEECH",
+                            threshold: "BLOCK_ONLY_HIGH"
+                        },
+                        {
+                            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                            threshold: "BLOCK_ONLY_HIGH"
+                        },
+                        {
+                            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+                            threshold: "BLOCK_ONLY_HIGH"
+                        }
+                    ],
+                    generationConfig: {
+                        maxOutputTokens: 150, // Reduced max tokens for shorter responses
+                        temperature: 0.7 // Slightly higher temp for more conversational tone
+                    }
                 })
             });
             
             const data = await response.json();
             
-            if (!response.ok) {
+            if (!response.ok || data.error) {
                 console.error('API error:', data);
-                throw new Error(data.error?.message || 'Error communicating with AI service');
+                // Provide a more specific error message if available
+                const errorMessage = data.error?.message || 'Error communicating with AI service';
+                throw new Error(errorMessage);
             }
             
-            const answer = data.choices[0]?.message?.content || "Sorry, I couldn't generate a response.";
+            // Extract text from Gemini response format
+            let answer = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response.";
             
+            // Use the formatter if available to enhance the response
+            if (window.stoxmate && window.stoxmate.responseFormatter) {
+                answer = window.stoxmate.responseFormatter.enhanceFormatting(answer);
+            }
+
             // Add the AI response to chat history
             this.chatHistory.push({
-                role: "assistant",
-                content: answer
+                role: "assistant", // Use 'assistant' or 'model' consistently
+                content: answer // Store the potentially formatted answer
             });
             
             return answer;
             
         } catch (error) {
             console.error("AI Advisor error:", error);
+            // Return the specific error message to the user
             return `Sorry, there was an error: ${error.message}. Please try again later.`;
         } finally {
             this.isLoading = false;
@@ -237,34 +188,8 @@ function setupChatInterface() {
         });
     });
     
-    // Check if advisor is initialized and show appropriate message
-    if (!window.stoxmate.aiAdvisor.initialized) {
-        const apiKeyPrompt = document.createElement('div');
-        apiKeyPrompt.className = 'message bot';
-        apiKeyPrompt.innerHTML = `
-            <p>To use the AI advisor, please enter your OpenAI API key:</p>
-            <div class="api-key-input">
-                <input type="password" id="api-key-input" placeholder="Enter API key">
-                <button id="save-api-key">Save</button>
-            </div>
-        `;
-        messagesContainer.appendChild(apiKeyPrompt);
-        
-        // Add event listener to the save button
-        document.getElementById('save-api-key').addEventListener('click', function() {
-            const apiKey = document.getElementById('api-key-input').value;
-            if (window.stoxmate.aiAdvisor.setApiKey(apiKey)) {
-                // Remove the API key prompt
-                apiKeyPrompt.remove();
-                
-                // Add welcome message
-                addBotMessage("Thank you! I'm the StoxMate AI Investment Advisor. How can I help you with your investment decisions today?");
-            }
-        });
-    } else {
-        // Add welcome message
-        addBotMessage("Hello! I'm the StoxMate AI Investment Advisor. How can I help you with your investment decisions today?");
-    }
+    // Add welcome message - no need to check if advisor is initialized since it's always initialized
+    addBotMessage("Hello! I'm the StoxMate AI Investment Advisor. How can I help you with your investment decisions today?");
     
     /**
      * Handle sending a message
@@ -320,29 +245,15 @@ function setupChatInterface() {
     
     /**
      * Add a bot message to the chat with enhanced formatting for simpler responses
-     * @param {string} message - The message text
+     * @param {string} message - The message text (already formatted)
      */
     function addBotMessage(message) {
         const botMessage = document.createElement('div');
         botMessage.className = 'message bot';
         
-        // Format message with enhanced markdown-like syntax
-        let formattedMessage = message
-            .replace(/\*\*(.*?)\*\*/g, '<span class="bot-response-highlight">$1</span>')  // Bold with highlight
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')              // Italic
-            .split('\n').join('<br>');                         // Line breaks
+        // Message is already formatted by enhanceFormatting, just set innerHTML
+        botMessage.innerHTML = `<p>${message.split('\n').join('<br>')}</p>`; // Basic line break handling
         
-        // Handle lists with improved formatting
-        if (message.includes('\n- ')) {
-            formattedMessage = formattedMessage.replace(/<br>- /g, '<br>• ');
-        }
-        
-        // Handle section headings for better structure
-        formattedMessage = formattedMessage.replace(/^(#+)\s+(.+?)$/gm, function(match, hashes, content) {
-            return `<div class="bot-section-heading">${content}</div>`;
-        });
-        
-        botMessage.innerHTML = `<p>${formattedMessage}</p>`;
         messagesContainer.appendChild(botMessage);
         
         // Scroll to bottom
